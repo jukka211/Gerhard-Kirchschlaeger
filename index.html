@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerhard Kirschläger</title>
+    <style>
+        @font-face {
+            font-family: 'Compagnon';
+            src: url('Compagnon-LightItalic.otf');
+        }
+
+        @font-face {
+            font-family: 'Tiny';
+            src: url('TINY5x3-100.otf');
+        }
+
+        @font-face {
+            font-family: 'Quattrocode';
+            src: url('Quattrocode-Regular-Desktop.otf');
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full viewport height */
+            margin: 0; /* Remove default margin */
+            overflow: hidden; /* Prevent scrolling */
+        }
+        .title {
+            display: flex;
+            flex-direction: column; /* Stack lines vertically */
+            align-items: center; /* Center align each line */
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 260px;
+            line-height: 250px;
+            font-weight: 500;
+            margin-bottom: 5%;
+        }
+
+        .line {
+            display: flex;
+            gap: 5px; /* Optional: space between letters */
+        }
+
+        .line span {
+            display: inline-block;
+            cursor: pointer; /* Change cursor to indicate clickable */
+            transition: transform 0.1s; /* Smooth transition for scaling */
+            user-select: none; /* Prevent text selection while dragging */
+            text-decoration: underline;
+        }
+
+        .subline {
+            font-family: 'arial';
+            font-weight: bold;
+            font-size: 15px;
+            letter-spacing: -0.1px;
+            position: fixed;
+            display: flex;
+            flex-direction: row;
+            gap:24px;
+            bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">
+        <div class="line">
+            <span>G</span>
+            <span>e</span>
+            <span>r</span>
+            <span>h</span>
+            <span>a</span>
+            <span>r</span>
+            <span>d</span>
+        </div>
+        <div class="line">
+            <span>K</span>
+            <span>i</span>
+            <span>r</span>
+            <span>s</span>
+            <span>c</span>
+            <span>h</span>
+            <span>l</span>
+            <span>ä</span>
+            <span>g</span>
+            <span>e</span>
+            <span>r</span>
+        </div>
+    </div>
+    <div class="subline">
+    <div class="about">About</div>
+    <div class="contact">Contact</div>
+    <div class="instagram">Instagram</div>
+    </div>
+
+    <script>
+        // List of font families including custom fonts
+        const fontFamilies = [
+            'Compagnon',
+            'Tiny',
+      
+            'AnotherFont, sans-serif',
+            'Arial, sans-serif',
+            'Courier New, monospace',
+            'Georgia, serif',
+            'Times New Roman, Times, serif',
+            
+         
+          
+        ];
+
+        // Function to get a random font from the list
+        function getRandomFont() {
+            return fontFamilies[Math.floor(Math.random() * fontFamilies.length)];
+        }
+
+        // Function to change font family for each letter randomly
+        function changeFontFamilyRandomly() {
+            document.querySelectorAll('.title span').forEach(span => {
+                span.style.fontFamily = getRandomFont();
+            });
+        }
+
+        // Event listener for mouse wheel scroll to change font family randomly
+        document.addEventListener('wheel', function() {
+            changeFontFamilyRandomly();
+        });
+
+        // Initial font set up to apply random fonts
+        changeFontFamilyRandomly();
+    </script>
+
+
+    <script>
+        // Track the element being dragged and the initial positions
+        let draggedElement = null;
+        let initialX, initialY;
+
+        document.querySelectorAll('.title span').forEach(span => {
+            span.addEventListener('mousedown', function(event) {
+                draggedElement = this;
+                initialX = event.clientX;
+                initialY = event.clientY;
+                event.preventDefault(); // Prevent text selection
+            });
+        });
+
+        document.addEventListener('mousemove', function(event) {
+            if (draggedElement) {
+                const deltaX = event.clientX - initialX;
+                const deltaY = event.clientY - initialY;
+
+                // Calculate scale based on mouse movement
+                const scaleX = Math.max(1 + deltaX / 100, 0.5); // Ensure scaling doesn't go below 0.5
+                const scaleY = Math.max(1 + deltaY / 100, 0.5);
+
+                // Apply transform
+                draggedElement.style.transform = `scale(${scaleX}, ${scaleY})`;
+            }
+        });
+
+        document.addEventListener('mouseup', function() {
+            draggedElement = null; // Reset dragged element on mouse up
+        });
+    </script>
+</body>
+</html>
