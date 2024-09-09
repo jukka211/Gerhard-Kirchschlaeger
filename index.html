@@ -6,23 +6,23 @@
     <title>Gerhard Kirschläger</title>
     <style>
         @font-face {
-            font-family: 'Compagnon';
-            src: url('Compagnon-LightItalic.otf');
+            font-family: 'Freizeit140';
+            src: url('Freizeit140-Regular.otf');
         }
 
         @font-face {
-            font-family: 'Tiny';
-            src: url('TINY5x3-100.otf');
+            font-family: 'Freizeit';
+            src: url('Freizeit-Regular.otf');
         }
-
+       
         @font-face {
-            font-family: 'Quattrocode';
-            src: url('Quattrocode-Regular-Desktop.otf');
+            font-family: 'FreizeitBold';
+            src: url(' Freizeit120Trial-Bold.otf');
         }
         body {
             display: flex;
-            justify-content: center;
-            align-items: center;
+            justify-content: left;
+            
             height: 100vh; /* Full viewport height */
             margin: 0; /* Remove default margin */
             overflow: hidden; /* Prevent scrolling */
@@ -30,17 +30,20 @@
         .title {
             display: flex;
             flex-direction: column; /* Stack lines vertically */
-            align-items: center; /* Center align each line */
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 260px;
-            line-height: 250px;
-            font-weight: 500;
-            margin-bottom: 5%;
+            align-items: left; /* Center align each line */
+            font-family: Freizeit;
+            font-size: 12rem;
+            line-height: 9.5rem;
+            margin-left: 20px;
+            margin-top: 20px;
+
+            
         }
 
         .line {
             display: flex;
-            gap: 5px; /* Optional: space between letters */
+            gap: 0px; /* Optional: space between letters */
+            letter-spacing: -5px;
         }
 
         .line span {
@@ -48,20 +51,48 @@
             cursor: pointer; /* Change cursor to indicate clickable */
             transition: transform 0.1s; /* Smooth transition for scaling */
             user-select: none; /* Prevent text selection while dragging */
-            text-decoration: underline;
+            
         }
 
         .subline {
-            font-family: 'arial';
-            font-weight: bold;
-            font-size: 15px;
-            letter-spacing: -0.1px;
+            font-family: 'Freizeit';
+           
+            font-size: 2.5rem;
+            line-height: 2.4rem;
             position: fixed;
             display: flex;
-            flex-direction: row;
-            gap:24px;
-            bottom: 16px;
+            text-align: left;
+            flex-direction: column;
+            gap:0px;
+            bottom: 30px;
+            margin-left: 30px;
+            transition: all 300ms ease-in-out;
         }
+
+        .subline div:hover {
+        font-family: 'Freizeit140'; /* Font-family on hover */
+        } 
+
+        @media screen and (min-width: 2800px) {
+            .title {
+            font-size: 31rem;
+            line-height: 25rem;
+            margin-left: 80px;
+            margin-top: 80px;
+            }
+            .line {
+            
+            letter-spacing: -12px;
+        }
+        .subline {
+            font-size: 7rem;
+            line-height: 6.5rem;
+            margin-left: 80px;
+            margin-bottom: 50px;
+           
+        }
+        }
+
     </style>
 </head>
 <body>
@@ -74,11 +105,14 @@
             <span>a</span>
             <span>r</span>
             <span>d</span>
-        </div>
-        <div class="line">
+            <span style="opacity: 0;">.</span>
             <span>K</span>
             <span>i</span>
             <span>r</span>
+        </div>
+        <div class="line">
+            <span>c</span>
+            <span>h</span>
             <span>s</span>
             <span>c</span>
             <span>h</span>
@@ -98,14 +132,8 @@
     <script>
         // List of font families including custom fonts
         const fontFamilies = [
-            'Compagnon',
-            'Tiny',
-      
-            'AnotherFont, sans-serif',
-            'Arial, sans-serif',
-            'Courier New, monospace',
-            'Georgia, serif',
-            'Times New Roman, Times, serif',
+        'Freizeit',
+        'Freizeit140'
             
          
           
@@ -133,37 +161,70 @@
     </script>
 
 
-    <script>
-        // Track the element being dragged and the initial positions
-        let draggedElement = null;
-        let initialX, initialY;
+<script>
+    // Track the element being dragged and the initial positions
+    let draggedElement = null;
+    let initialX, initialY;
+    let initialFontSize;
 
-        document.querySelectorAll('.title span').forEach(span => {
-            span.addEventListener('mousedown', function(event) {
-                draggedElement = this;
-                initialX = event.clientX;
-                initialY = event.clientY;
-                event.preventDefault(); // Prevent text selection
-            });
+    document.querySelectorAll('.title span').forEach(span => {
+        span.addEventListener('mousedown', function(event) {
+            draggedElement = this;
+            initialX = event.clientX;
+            initialY = event.clientY;
+            initialFontSize = parseFloat(window.getComputedStyle(draggedElement).fontSize); // Get the initial font size
+            event.preventDefault(); // Prevent text selection
         });
+    });
 
-        document.addEventListener('mousemove', function(event) {
-            if (draggedElement) {
-                const deltaX = event.clientX - initialX;
-                const deltaY = event.clientY - initialY;
+    document.addEventListener('mousemove', function(event) {
+        if (draggedElement) {
+            const deltaX = event.clientX - initialX;
+            const deltaY = event.clientY - initialY;
 
-                // Calculate scale based on mouse movement
-                const scaleX = Math.max(1 + deltaX / 100, 0.5); // Ensure scaling doesn't go below 0.5
-                const scaleY = Math.max(1 + deltaY / 100, 0.5);
+            // Calculate the new font size based on the mouse movement
+            // You can adjust the division factor to control sensitivity
+            const newFontSize = Math.max(initialFontSize + (deltaX + deltaY) / 2, 8); // Ensure font size doesn't go below 8px
 
-                // Apply transform
-                draggedElement.style.transform = `scale(${scaleX}, ${scaleY})`;
-            }
+            // Apply the new font size
+            draggedElement.style.fontSize = `${newFontSize}px`;
+        }
+    });
+
+    document.addEventListener('mouseup', function() {
+        draggedElement = null; // Reset dragged element on mouse up
+    });
+</script>
+
+<script>
+   
+
+    document.querySelectorAll('.title span').forEach(span => {
+        span.addEventListener('mousedown', function(event) {
+            draggedElement = this;
+            initialX = event.clientX;
+            initialY = event.clientY;
+            event.preventDefault(); // Prevent text selection
         });
+    });
 
-        document.addEventListener('mouseup', function() {
-            draggedElement = null; // Reset dragged element on mouse up
-        });
-    </script>
+    document.addEventListener('mousemove', function(event) {
+        if (draggedElement) {
+            const deltaX = event.clientX - initialX;
+            const deltaY = event.clientY - initialY;
+
+            // Calculate scale based on mouse movement
+            const scaleX = Math.max(1 + deltaX / 100, 0.5); // Ensure scaling doesn't go below 0.5
+            const scaleY = Math.max(1 + deltaY / 100, 0.5);
+
+            // Apply transform
+            draggedElement.style.transform = `scale(${scaleX}, ${scaleY})`;
+        }
+    });
+
+    document.addEventListener('mouseup', function() {
+        draggedElement = null; // Reset dragged element on mouse up
+    });
+</script>
 </body>
 </html>
