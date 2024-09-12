@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerhard Kirschläger</title>
+    <style>
+        @font-face {
+            font-family: 'Freizeit140';
+            src: url('Freizeit140-Regular.otf');
+        }
+
+        @font-face {
+            font-family: 'Freizeit';
+            src: url('Freizeit-Regular.otf');
+        }
+       
+        @font-face {
+            font-family: 'FreizeitBold';
+            src: url(' Freizeit120Trial-Bold.otf');
+        }
+        body {
+    display: flex;
+    justify-content: flex-start; /* Align content to the left */
+    align-items: flex-start; /* Align content to the top */
+    height: 100vh; /* Full viewport height */
+    margin: 0; /* Remove default margin */
+    overflow: hidden; /* Prevent scrolling */
+    background-color: white;
+}
+        .title {
+            font-family: 'Freizeit140';
+            display: flex;
+            flex-direction: column; /* Stack lines vertically */
+            align-items: flex-start;
+            font-size: 5rem;
+            line-height: 4.4rem;
+           margin-left: 10px;
+           margin-left: 20px;
+           transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); 
+        
+            
+        }
+
+        .line {
+            display: flex;
+            gap: 0px; /* Optional: space between letters */
+            letter-spacing: -8px;
+            
+            
+        }
+
+        .line span {
+            display: inline-block;
+            cursor: pointer; /* Change cursor to indicate clickable */
+            transition: transform 0.25s cubic-bezier(0.34, 2.5, 0.64, 1); 
+            user-select: none; /* Prevent text selection while dragging */
+          
+        }
+
+        .subline {
+            font-family: 'Freizeit';
+           
+            font-size: 1.5rem;
+            line-height: 1.3rem;
+            position: fixed;
+            display: flex;
+            text-align: left;
+            flex-direction: column;
+            gap:0px;
+            bottom: 30px;
+            margin-left: 30px;
+            transition: all 300ms ease-in-out; 
+            display: none;
+        }
+        .subline div {
+            color: rgb(0, 0, 0);
+        }
+        .subline div:hover {
+        font-family: 'Freizeit140'; /* Font-family on hover */
+        } 
+        .line a {
+            color:black;
+            text-decoration: none;
+            transition: transform 0.3s ease-in-out;
+            user-select: none;
+        }
+
+        .line a:hover {
+            font-style: oblique;
+        }
+
+        @media screen and (min-width: 2800px) {
+            .title {
+            font-size:17rem;
+            line-height: 15rem;
+         
+            }
+            .line {
+            
+            letter-spacing: -12px;
+        }
+        .subline {
+            font-size: 4rem;
+            line-height: 6.5rem;
+            gap: 60px;
+           
+        }
+        }
+    </style>
+</head>
+<body>
+    <div class="title">
+        <div class="line">
+            <span id="scrollText">Gerhard<br>
+                @Kirchschl<br>
+               aeger(dot)<br>
+               at ++43(0<br>
+               )6763140<br>
+               568 Bahn<br>
+               hofplatz 1<br>
+               4600 Wels<br>
+               AT @inst<br>
+           
+           
+        </div>
+        
+    </div>
+   
+    
+
+
+    <script>
+        let isDragging = false; // Track whether the user is dragging
+        let scaleX = 1; // Initialize scaleX
+        let startX, startY; // Variables to store the starting mouse position
+        const dragThreshold = 5; // Set a threshold for drag distance (5 pixels)
+        
+        // Listen for the mousedown event
+        document.addEventListener('mousedown', function(event) {
+            isDragging = false; // Reset dragging state
+            startX = event.clientX; // Store the initial X position
+            startY = event.clientY; // Store the initial Y position
+            isDragging = true; // Start dragging
+        });
+        
+        // Listen for the mousemove event
+        document.addEventListener('mousemove', function(event) {
+            if (!isDragging) return; // Only execute if dragging
+            
+            // Calculate the distance the mouse has moved
+            const moveX = Math.abs(event.clientX - startX);
+            const moveY = Math.abs(event.clientY - startY);
+        
+            // If the mouse moves beyond the threshold, consider it dragging
+            if (moveX > dragThreshold || moveY > dragThreshold) {
+                isDragging = true;
+            }
+        
+            // Get the width of the window
+            const windowWidth = window.innerWidth;
+            
+            // Calculate the mouse X position as a percentage of the window width
+            const mouseX = event.clientX;
+            const percentageX = mouseX / windowWidth;
+        
+            // Set the scale based on the mouse X position
+            const newScaleX = Math.max(1, 1 + (percentageX - 0.5) * 4.5); // Adjust the scale factor for X
+        
+            // Update global scaleX
+            scaleX = newScaleX;
+        
+            // Apply scaleX to all spans in the .title
+            document.querySelectorAll('.title span').forEach(span => {
+                span.style.transformOrigin = 'left center'; // Fix the left side
+                span.style.transform = `scaleX(${scaleX})`; // Apply scaling on X axis only
+            });
+        });
+        
+        // Listen for the mouseup event
+        document.addEventListener('mouseup', function(event) {
+            isDragging = false; // Stop dragging
+        });
+        
+        // Prevent false clicks on links during dragging
+        document.querySelectorAll('.line a').forEach(link => {
+            link.addEventListener('click', function(event) {
+                if (isDragging) {
+                    event.preventDefault(); // Prevent the default link action if dragging
+                }
+            });
+        });
+        document.addEventListener('mouseup', function() {
+        // Reset the transform and margins after the dragging is done
+        document.querySelectorAll('.title span').forEach(span => {
+            span.style.transform = '';
+            span.style.marginRight = '';
+            span.style.marginLeft = '';
+        });
+        draggedElement = null;  // Reset dragged element on mouse up
+    });
+        </script>
+        
+    
+    
+    
+    
+
+
+
+
+
+
+
+
+</body>
+</html>
