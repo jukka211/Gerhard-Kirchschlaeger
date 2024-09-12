@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        ::-webkit-scrollbar {
+    width: 1px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: black;  /* Scrollbar color */
+       /* Rounded edges */
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;  /* Background of scrollbar track */
+}
+        @font-face {
+            font-family: 'Freizeit140';
+            src: url('Freizeit140-Regular.otf');
+        }
+
+        @font-face {
+            font-family: 'Freizeit';
+            src: url('Freizeit-Regular.otf');
+        }
+       
+        @font-face {
+            font-family: 'FreizeitBold';
+            src: url('Freizeit140Trial-Medium.otf');
+        }
+  
+        body {
+            font-feature-settings: 'onum' 1;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            height: 300vh;
+            margin: 0;
+            overflow-x: hidden;
+            background-color: white;
+            padding-right: 20px;
+        }
+
+        .title {
+            position: fixed;
+            font-family: 'Freizeit140';
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            font-size: 5rem;
+            line-height: 4.8rem;
+            
+            transition: transform 0.3s ease-in-out;
+            white-space: nowrap; /* Prevent line break */
+        }
+
+        .line {
+            display: flex;
+            gap: 0px;
+            letter-spacing: -8px;
+        }
+
+        .line span {
+            display: inline-block;
+            cursor: pointer;
+            transition: transform 0.3s;
+            user-select: none;
+        }
+
+        .subline {
+            font-family: 'Freizeit';
+            font-size: 1.5rem;
+            line-height: 1.3rem;
+            position: fixed;
+            display: flex;
+            text-align: left;
+            flex-direction: column;
+            gap: 0px;
+            bottom: 30px;
+            margin-left: 30px;
+            transition: all 0.3ms ease-in-out;
+            display: none;
+        }
+
+        .subline div {
+            color: rgb(0, 0, 0);
+        }
+
+        .subline div:hover {
+            font-family: 'Freizeit140';
+        }
+
+        .line a {
+            color: black;
+            text-decoration: none;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .line a:hover {
+            font-family: 'FreizeitBold';
+            font-style:italic;
+           
+        }
+
+        @media screen and (min-width: 2800px) {
+            .title {
+            font-size:17rem;
+            line-height: 15rem;
+         
+            }
+
+            .line {
+                letter-spacing: -12px;
+            }
+
+            .subline {
+                font-size: 4rem;
+                line-height: 6.5rem;
+                gap: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="title">
+        <div class="line">
+            <span id="scrollText">
+                <a href="">Gerhard<br>@Kirchschl<br>aeger(dot)<br>at</a> 
+                <a href="">++43(0<br>)67631405<br>68</a> 
+                <a href="">Bahn<br>hofplatz 1<br>4600 Wels<br>Österr.</a><br>
+                <a href="">Instagram</a>
+            </span>
+        </div>
+    </div>
+    <div class="subline">
+        <div class="about">About</div>
+        <div class="contact">Contact</div>
+        <div class="instagram">Instagram</div>
+    </div>
+    <script>
+        // Increasing scroll speed by multiplying the default delta value
+        window.addEventListener('wheel', function(e) {
+          if (e.deltaY !== 0) {
+            // Prevent default scrolling
+            e.preventDefault();
+      
+            // Multiply scroll speed (3x faster in this case)
+            window.scrollBy({
+              top: e.deltaY * 999, // Adjust the value for faster or slower scrolling
+              behavior: 'auto'
+            });
+          }
+        });
+      </script>
+      
+    <script>
+        const title = document.querySelector('.title');
+        const span = document.querySelector('#scrollText');
+    
+        window.addEventListener('scroll', function() {
+            const scrollY = window.scrollY;
+            const maxScroll = document.body.scrollHeight - window.innerHeight;
+    
+            // Calculate the initial width of the text and the screen width
+            const screenWidth = window.innerWidth;
+            const textWidth = span.offsetWidth;
+    
+            // Calculate the maximum scale factor based on screen width
+            const maxScale = screenWidth / textWidth;
+    
+            // Calculate scaling factor based on scroll
+            let scaleFactor = 1 + (scrollY / maxScroll) * (maxScale - 1);
+            
+            // Ensure the text does not scale beyond the calculated maximum scale
+            if (scaleFactor > maxScale) {
+                scaleFactor = maxScale;
+            }
+    
+            // Apply the scaling transformation and fix the origin to the left
+            span.style.transformOrigin = '0 0'; // Keep the left side fixed
+            span.style.transform = `scaleX(${scaleFactor})`;
+        });
+    </script>
+    
+    
+</body>
+</html>
