@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerhard Kirschläger</title>
+    <style>
+        @font-face {
+            font-family: 'Freizeit140';
+            src: url('Freizeit140-Regular.otf');
+        }
+
+        @font-face {
+            font-family: 'Freizeit';
+            src: url('Freizeit-Regular.otf');
+        }
+       
+        @font-face {
+            font-family: 'FreizeitBold';
+            src: url(' Freizeit120Trial-Bold.otf');
+        }
+        body {
+            font-feature-settings: 'onum' 1;
+            display: flex;
+            justify-content: left;
+            width: 100vw;
+            height: 100vh; /* Full viewport height */
+            margin: 0; /* Remove default margin */
+            overflow: hidden; /* Prevent scrolling */
+   
+            margin-left: 10px;
+        }
+        .title {
+            width: 100vw;
+            height: 100%;
+            position: fixed;
+            display: flex;
+            flex-direction: column; /* Stack lines vertically */
+            align-items: left; /* Center align each line */
+            font-family: Freizeit;
+            font-size: 6rem;
+            line-height: 5rem;
+          
+            
+            overflow: hidden; /* Prevent scrolling */
+            
+            
+        }
+
+        .line {
+            
+            display: flex;
+            gap: 0px; /* Optional: space between letters */
+            letter-spacing: -9px;
+        }
+
+        .line span {
+            display: inline-block;
+            cursor: pointer; /* Change cursor to indicate clickable */
+
+         
+            
+            
+        }
+
+        .line span {
+            display: inline-block;
+            cursor: pointer; /* Change cursor to indicate clickable */
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy effect */
+           
+            margin-right: 0%;
+            margin-left: 0%;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            
+        }
+
+        
+
+
+        a {
+           
+    text-decoration: none;
+    color: black;
+    text-align: left;
+    letter-spacing: -13px;
+    width: max-content;
+    white-space: nowrap;
+   
+}
+
+
+.line span:hover {
+    transform: scaleX(1.22); /* Stretch the element 2 times its original width */
+    margin-right: 0.5%;
+    margin-left: 0.5%;
+}
+
+
+        @media screen and (min-width: 2800px) {
+            .title {
+            font-size:17rem;
+            line-height: 15rem;
+         
+            }
+            .line {
+            
+            letter-spacing: -12px;
+        }
+        .subline {
+            font-size: 7rem;
+            line-height: 6.5rem;
+            margin-left: 80px;
+            margin-bottom: 50px;
+           
+        }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="title">
+        <div class="line">
+            <a href="mailto:gerhard@kirchschlaeger.at" id="delayed-link" target="_blank">
+            <span>G</span>
+            <span>e</span>
+            <span>r</span>
+            <span>h</span>
+            <span>a</span>
+            <span>r</span>
+            <span>d</span>
+            </a>
+         
+        </div>
+            <div class="line">
+                <a href="mailto:gerhard@kirchschlaeger.at" id="delayed-link" target="_blank">
+                <span>@</span>
+                <span>K</span>
+                <span>i</span>
+                <span>r</span>
+                <span>c</span>
+                <span>h</span>
+                <span>s</span>
+                <span>c</span>
+                <span>h</span>
+                <span>l</span>
+            </a>
+            </div>
+            <div class="line">
+                <a href="mailto:gerhard@kirchschlaeger.at" id="delayed-link" target="_blank">
+                <span>a</span>
+                <span>e</span>
+                <span>g</span>
+                <span>e</span>
+                <span>r</span>
+                <span>(</span>
+                <span>d</span>
+                <span>o</span>
+                <span>t</span>
+                <span>)</span>
+            </a>
+            </div>
+            <div class="line">
+                <a href="mailto:gerhard@kirchschlaeger.at" id="delayed-link" target="_blank">
+                    
+                <span>a</span>
+                <span>t</span>
+                <span style="opacity: 0;">.</span>
+        </a>
+        <a href="tel:+43"id="delayed-link" target="_blank">
+                <span>+</span>
+            <span>+</span>
+            <span>4</span>
+            <span>3</span>
+            <span>(</span>
+        </a>
+            </div>
+        
+           
+        
+        <div class="line">
+            <a href="tel:+43" id="delayed-link" target="_blank">
+            <span>0</span>
+            <span>)</span>
+            <span>6</span>
+            <span>7</span>
+            <span>6</span>
+            <span>3</span>
+            <span>1</span>
+            <span>4</span>
+        </a>
+        </div>
+        <div class="line">
+            <a href="tel:+43" id="delayed-link" target="_blank">
+            <span>0</span>
+            <span>5</span>
+            <span>6</span>
+            <span>8</span>
+     </a>
+     <a href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x4773f2bcca1dfca9:0xd58bacf80e560496?sa=X&ved=1t:8290&ictx=111" id="delayed-link" target="_blank">
+        <span style="opacity: 0;">.</span>
+            <span>B</span>
+            <span>a</span>
+            <span>h</span>
+            <span>n</span>
+        </a>
+        </div>
+        <div class="line">
+            <a href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x4773f2bcca1dfca9:0xd58bacf80e560496?sa=X&ved=1t:8290&ictx=111" id="delayed-link" target="_blank">
+            <span>h</span>
+            <span>o</span>
+            <span>f</span>
+            <span>p</span>
+            <span>l</span>
+            <span>a</span>
+            <span>t</span>
+            <span>z</span>
+            <span style="opacity: 0;">.</span>
+            <span>1</span>
+        </a>
+        </div>
+        <div class="line">
+            <a href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x4773f2bcca1dfca9:0xd58bacf80e560496?sa=X&ved=1t:8290&ictx=111" id="delayed-link" target="_blank">
+            <span>4</span>
+            <span>6</span>
+            <span>0</span>
+            <span>0</span>
+            <span style="opacity: 0;">.</span>
+            <span>W</span>
+            <span>e</span>
+            <span>l</span>
+            <span>s</span>
+        </a>
+        
+        </div>
+        <div class="line">
+            <a href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x4773f2bcca1dfca9:0xd58bacf80e560496?sa=X&ved=1t:8290&ictx=111" id="delayed-link" target="_blank">
+            <span>A</span>
+            <span>T</span>
+            
+        </a>
+            
+            
+        </div>
+
+     
+    </div>
+    
+    <script>
+        // List of font families including custom fonts
+        const fontFamilies = [
+        'Freizeit',
+        'Freizeit140'
+            
+         
+          
+        ];
+
+        // Function to get a random font from the list
+        function getRandomFont() {
+            return fontFamilies[Math.floor(Math.random() * fontFamilies.length)];
+        }
+
+        // Function to change font family for each letter randomly
+        function changeFontFamilyRandomly() {
+            document.querySelectorAll('.title span').forEach(span => {
+                span.style.fontFamily = getRandomFont();
+            });
+        }
+
+        // Event listener for mouse wheel scroll to change font family randomly
+        document.addEventListener('wheel', function() {
+            changeFontFamilyRandomly();
+        });
+
+        // Initial font set up to apply random fonts
+        changeFontFamilyRandomly();
+    </script>
+
+
+<script>
+    // Select all <a> elements on the page
+    const links = document.querySelectorAll('a');
+    
+    // Loop through each link and add the event listeners
+    links.forEach(function(link) {
+        // Add event listener for the single click to prevent the link behavior
+        link.addEventListener('click', function(event) {
+            event.preventDefault();  // Prevent single-click from following the link
+        });
+
+        // Add event listener for double click
+        link.addEventListener('dblclick', function(event) {
+            // Allow default behavior on double-click (navigate to link)
+            window.location.href = link.href;
+        });
+    });
+</script>
+
+
+
+<script>
+    // Track the element being dragged and the initial positions
+    let draggedElement = null;
+    let initialX, initialY;
+
+    // Add mousedown event listener to each span element
+    document.querySelectorAll('.title span').forEach(span => {
+        span.addEventListener('mousedown', function(event) {
+            draggedElement = this;  // Get the individual letter being dragged
+            initialX = event.clientX;  // Store the initial X position when the mouse is pressed down
+            initialY = event.clientY;  // Store the initial Y position when the mouse is pressed down
+            event.preventDefault();  // Prevent text selection while dragging
+        });
+    });
+
+    document.addEventListener('mousemove', function(event) {
+        if (draggedElement) {
+            const deltaX = event.clientX - initialX;  // Calculate the movement on the X-axis
+            const deltaY = event.clientY - initialY;  // Calculate the movement on the Y-axis
+
+            // Calculate horizontal and vertical scale based on mouse movement
+            const scaleX = Math.max(1 + deltaX / 100, 1);  // Ensure scaling doesn't go below 1 (no shrink horizontally)
+            const scaleY = Math.max(1 + deltaY / 100, 1);  // Ensure scaling doesn't go below 1 (no shrink vertically)
+
+            // Apply the transform-origin to keep the left side fixed
+            draggedElement.style.transformOrigin = 'left';  // Fix the origin to the left side
+
+            // Apply the horizontal and vertical scale to the dragged element (letter)
+            draggedElement.style.transform = `scale(${scaleX}, ${scaleY})`;
+
+            // Adjust margin of the dragged element to create more space just after it
+            draggedElement.style.marginRight = `${deltaX / 2}px`;  // Create a smaller margin after the stretched letter
+
+            // Shift subsequent letters without changing the internal letter spacing
+            let nextElement = draggedElement.nextElementSibling;
+
+            // Reduce the shiftAmount by adjusting the factor to make the space smaller
+            const shiftAmount = (scaleX - 1) * draggedElement.offsetWidth + deltaX / 2;  // Decrease the shift to make the space smaller
+
+            // Apply the shift to subsequent letters
+            while (nextElement) {
+                nextElement.style.transform = `translateX(${shiftAmount}px)`;  // Shift subsequent letters to the right
+                nextElement = nextElement.nextElementSibling;
+            }
+        }
+    });
+
+    document.addEventListener('mouseup', function() {
+        // Reset the transform and margins after the dragging is done
+        document.querySelectorAll('.title span').forEach(span => {
+            span.style.transform = '';
+            span.style.marginRight = '';
+            span.style.marginLeft = '';
+        });
+        draggedElement = null;  // Reset dragged element on mouse up
+    });
+</script>
+
+
+
+
+
+
+
+
+</body>
+</html>
