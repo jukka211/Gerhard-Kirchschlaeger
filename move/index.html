@@ -91,116 +91,85 @@
   <button id="motionBtn">[Allow Motion Access]</button>
 
 <script>
-let permissionGrantedForText = false;
-let permissionGrantedForButton = false;
-
-// --- TEXT SCALING ON X-TILT ---
-function setupTextScaling() {
-  let button = document.querySelector('#motionBtn');
-  button.addEventListener('click', requestTextScalingPermission);
-}
-
-function requestTextScalingPermission() {
-  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-    DeviceOrientationEvent.requestPermission()
-      .then(response => {
-        if (response === 'granted') {
-          permissionGrantedForText = true;
-          document.querySelector('#motionBtn').style.display = 'none'; // Hide the button
-          window.addEventListener('deviceorientation', handleTextOrientation);
-        } else {
-          console.log('Motion permission denied for text scaling');
-        }
-      })
-      .catch(console.error);
-  } else {
-    permissionGrantedForText = true;
-    document.querySelector('#motionBtn').style.display = 'none';
-    window.addEventListener('deviceorientation', handleTextOrientation);
-  }
-}
-
-function handleTextOrientation(event) {
-  if (!permissionGrantedForText) return;
-
- const threshold = 15; // Increase the threshold for when scaling starts based on X-axis tilt
+    let permissionGranted = false;
+    const titleDiv = document.querySelector('.text-mobile');
+    const threshold = 15; // Increase the threshold for when scaling starts based on X-axis tilt
     const deadZone = 1; // Increase dead zone to ignore smaller tilts
     let lastScaleFactorY = 1; // Store the last scale factor to smooth transitions
     let lastUpdateTime = 0; // Track the last time the scaling was updated
     const updateInterval = 50; // Minimum time between updates (in milliseconds)
 
-  if (Math.abs(tiltX) < deadZoneText) return;
+    function setup() {
+      // Use p5.js to create a button and handle permission
+      let button = select('#motionBtn');
+      button.mousePressed(requestMotionPermission);
+    }
 
+    function requestMotionPermission() {
+      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+          .then(response => {
+            if (response === 'granted') {
+              permissionGranted = true;
+              console.log('Motion permission granted');
+              select('#motionBtn').hide(); // Hide the button after granting permission
+              window.addEventListener('deviceorientation', handleOrientation);
+            } else {
+              console.log('Motion permission denied');
+            }
+          })
+          .catch(console.error);
+      } else {
+        // For browsers that don't require permission (e.g., Android devices)
+        permissionGranted = true;
+        select('#motionBtn').hide();
+        window.addEventListener('deviceorientation', handleOrientation);
+      }
+    }
+
+    // Low-pass filter constant (higher value = more smoothing, but slower response)
+    const smoothingFactor = 0.15; // Increase smoothing factor for even slower response
+
+    function handleOrientation(event) {
+  if (!permissionGranted) return;
+
+  const tiltX = event.beta; // X-axis (front-to-back tilt)
+
+  // Apply dead zone to avoid twitching at small tilts
+  if (Math.abs(tiltX) < deadZone) {
+    return; // Ignore tilts within the dead zone
+  }
+
+  // Only update scaling if enough time has passed (debouncing)
+  const currentTime = Date.now();
+  if (currentTime - lastUpdateTime < updateInterval) {
+    return; // Skip this update if it's too soon
+  }
+  lastUpdateTime = currentTime; // Update the last update time
+
+  // Map the tilt to a scaling factor that compresses for positive tilt and stretches for negative tilt
   let newScaleFactorY;
 
   if (tiltX > 0) {
-    newScaleFactorY = 1 + (tiltX / 10);
-  } else {
-    newScaleFactorY = 1 - (-tiltX / 75);
-  }
-
-  // Clamp the scale values
-  if (newScaleFactorY < 0.1) newScaleFactorY = 0.1;
-  if (newScaleFactorY > 9) newScaleFactorY = 9;
-
-  lastScaleFactorY = lastScaleFactorY + smoothingFactorText * (newScaleFactorY - lastScaleFactorY);
-
-  const titleDiv = document.querySelector('.text-mobile');
-  titleDiv.style.transform = `scaleY(${lastScaleFactorY})`;
+  // When the device is tilted upward (positive tilt), stretch the text
+  newScaleFactorY = 1 + (tiltX / 10); // Adjust 50 for sensitivity
+} else {
+  // When the device is tilted downward (negative tilt), compress the text
+  newScaleFactorY = 1 - (-tiltX / 75); // Adjust 50 for sensitivity
 }
 
-// --- INSTAGRAM BUTTON MOVEMENT ON Y-TILT ---
-function setupButtonMovement() {
-  let button = document.querySelector('#motionBtn');
-  button.addEventListener('click', requestButtonMovementPermission);
+// Clamp the scale values to avoid extreme shrinking/expanding
+if (newScaleFactorY < 0.1) newScaleFactorY = 0.1; // Limit minimum compression
+if (newScaleFactorY > 9) newScaleFactorY = 9; // Limit maximum stretch
+
+// Apply a low-pass filter to smooth out sudden changes
+lastScaleFactorY = lastScaleFactorY + smoothingFactor * (newScaleFactorY - lastScaleFactorY);
+
+
+  // Apply the smoothed scaling transformation to the Y-axis
+  titleDiv.style.transform = scaleY(${lastScaleFactorY});
 }
-
-function requestButtonMovementPermission() {
-  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-    DeviceOrientationEvent.requestPermission()
-      .then(response => {
-        if (response === 'granted') {
-          permissionGrantedForButton = true;
-          window.addEventListener('deviceorientation', handleButtonOrientation);
-        } else {
-          console.log('Motion permission denied for button movement');
-        }
-      })
-      .catch(console.error);
-  } else {
-    permissionGrantedForButton = true;
-    window.addEventListener('deviceorientation', handleButtonOrientation);
-  }
-}
-
-function handleButtonOrientation(event) {
-  if (!permissionGrantedForButton) return;
-
-  const tiltY = event.beta; // Y-axis for Instagram button
-  const deadZoneButton = 1; // Ignore small tilts
-  const updateInterval = 50;
-  let lastUpdateTimeButton = 0;
-
-  const currentTime = Date.now();
-  if (currentTime - lastUpdateTimeButton < updateInterval) return;
-  lastUpdateTimeButton = currentTime;
-
-  if (Math.abs(tiltY) < deadZoneButton) return;
-
-  const screenHeight = window.innerHeight;
-  const instagramButton = document.querySelector('.inst');
-  let newYPosition = ((tiltY + 90) / 180) * screenHeight; // Map tilt to screen height
-
-  newYPosition = Math.max(0, Math.min(screenHeight - instagramButton.offsetHeight, newYPosition));
-
-  instagramButton.style.position = 'fixed';
-  instagramButton.style.left = '0'; // Keep on the left
-  instagramButton.style.bottom = `${newYPosition}px`; // Move up/down based on tiltY
-}
-
-// Initialize both setups
-setupTextScaling();
-setupButtonMovement();
+  
 </script>
 
 </body>
