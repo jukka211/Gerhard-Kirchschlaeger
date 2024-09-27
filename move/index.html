@@ -52,6 +52,10 @@
     text-rendering: optimizeLegibility;
     will-change: transform;
     transform: translateZ(0);
+      -webkit-font-smoothing: subpixel-antialiased;  /* For WebKit browsers */
+    -moz-osx-font-smoothing: auto;
+    backface-visibility: hidden;
+    font-feature-settings: "liga", "kern";
     }
     a {
       color:black;
