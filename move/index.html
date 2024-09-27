@@ -39,8 +39,8 @@
       transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1.1); /* Bouncy effect */
       user-select: none;
       overflow: hidden; /* Prevent scrolling */
-      font-size: 3.5rem;
-      line-height: 3rem;
+      font-size: 4rem;
+      line-height: 3.5rem;
       letter-spacing: -2.5px;
       text-align: left;
      
@@ -146,7 +146,7 @@
 
 // Clamp the scale values to avoid extreme shrinking/expanding
 if (newScaleFactorY < 0.1) newScaleFactorY = 0.1; // Limit minimum compression
-if (newScaleFactorY > 1.2) newScaleFactorY = 1.2; // Limit maximum stretch
+if (newScaleFactorY > 1.2) newScaleFactorY = 1.3; // Limit maximum stretch
 
 // Apply a low-pass filter to smooth out sudden changes
 lastScaleFactorY = lastScaleFactorY + smoothingFactor * (newScaleFactorY - lastScaleFactorY);
