@@ -59,8 +59,10 @@
     let permissionGranted = false;
     const titleDiv = document.querySelector('.text-mobile');
     const threshold = 15; // Increase the threshold for when scaling starts based on X-axis tilt
-    const deadZone = 5; // Dead zone for small tilts (between -5 and 5 degrees)
+    const deadZone = 10; // Increase dead zone to ignore smaller tilts
     let lastScaleFactorY = 1; // Store the last scale factor to smooth transitions
+    let lastUpdateTime = 0; // Track the last time the scaling was updated
+    const updateInterval = 100; // Minimum time between updates (in milliseconds)
 
     function setup() {
       // Use p5.js to create a button and handle permission
@@ -90,8 +92,8 @@
       }
     }
 
-    // Low-pass filter constant (increase for more smoothing)
-    const smoothingFactor = 0.05; // Increased for smoother transitions
+    // Low-pass filter constant (higher value = more smoothing, but slower response)
+    const smoothingFactor = 0.05; // Increase smoothing factor for even slower response
 
     // Handle device orientation (X-axis tilt only)
     function handleOrientation(event) {
@@ -104,10 +106,17 @@
         return; // Ignore tilts within the dead zone
       }
 
+      // Only update scaling if enough time has passed (debouncing)
+      const currentTime = Date.now();
+      if (currentTime - lastUpdateTime < updateInterval) {
+        return; // Skip this update if it's too soon
+      }
+      lastUpdateTime = currentTime; // Update the last update time
+
       // Only apply scaling if tilt exceeds threshold
       if (Math.abs(tiltX) > threshold) {
         // Calculate a new scaling factor based on X-axis tilt
-        let newScaleFactorY = 1 - (Math.abs(tiltX) / 10); // Adjust 200 for sensitivity
+        let newScaleFactorY = 1 - (Math.abs(tiltX) / 200); // Adjust 200 for sensitivity
 
         // Clamp the scale values to avoid extreme shrinking/expanding
         if (newScaleFactorY < 0.1) newScaleFactorY = 0.1;
@@ -121,6 +130,7 @@
       }
     }
 </script>
+
 
 </body>
 </html>
