@@ -17,8 +17,8 @@
       display: flex;
       justify-content: left;
       align-items: left;
-      font-size: 48px;
-      line-height: 40px;
+      font-size: 56px;
+      line-height: 50px;
       font-family:arial;
     }
 
@@ -117,14 +117,14 @@
 
   if (tiltX > 0) {
     // When the device is tilted upward (positive tilt), compress the text
-    newScaleFactorY = 1 - (tiltX / 100); // Adjust 100 for sensitivity
+    newScaleFactorY = 1 - (tiltX / 50); // Adjust 100 for sensitivity
   } else {
     // When the device is tilted downward (negative tilt), stretch the text
-    newScaleFactorY = 1 + (-tiltX / 100); // Adjust 100 for sensitivity
+    newScaleFactorY = 1 + (-tiltX / 50); // Adjust 100 for sensitivity
   }
 
   // Clamp the scale values to avoid extreme shrinking/expanding
-  if (newScaleFactorY < 0.5) newScaleFactorY = 0.5; // Limit minimum compression
+  if (newScaleFactorY < 0.5) newScaleFactorY = 0.2; // Limit minimum compression
   if (newScaleFactorY > 2) newScaleFactorY = 2; // Limit maximum stretch
 
   // Apply a low-pass filter to smooth out sudden changes
