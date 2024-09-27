@@ -145,8 +145,8 @@
 }
 
 // Clamp the scale values to avoid extreme shrinking/expanding
-if (newScaleFactorY < 0.1) newScaleFactorY = 0.05; // Limit minimum compression
-if (newScaleFactorY > 3) newScaleFactorY = 2; // Limit maximum stretch
+if (newScaleFactorY < 0.1) newScaleFactorY = 0.1; // Limit minimum compression
+if (newScaleFactorY > 1.2) newScaleFactorY = 1.2; // Limit maximum stretch
 
 // Apply a low-pass filter to smooth out sudden changes
 lastScaleFactorY = lastScaleFactorY + smoothingFactor * (newScaleFactorY - lastScaleFactorY);
