@@ -18,23 +18,23 @@
       justify-content: left;
       align-items: left;
       font-size: 48px;
+      line-height: 40px;
+      font-family:arial;
     }
 
     .text-mobile {
       text-align: left;
-      transition: transform 0.3s ease; /* Smooth transition for scaling */
+      transition: transform 0.1s ease; /* Smooth transition for scaling */
     }
     a {
       color:black;
     text-decoration:none;}
     #motionBtn {
       position: absolute;
-      top: 10px;
+      bottom: 10px;
       left: 10px;
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: white;
-      border: none;
+    
+      
       cursor: pointer;
       border-radius: 5px;
     }
@@ -54,10 +54,12 @@
   <!-- Button for requesting motion permission -->
   <button id="motionBtn">Allow Motion Access</button>
 
-   <script>
+ <script>
     let permissionGranted = false;
     const titleDiv = document.querySelector('.text-mobile');
     const threshold = 10; // Adjust the threshold for tilt sensitivity
+
+    let lastScaleFactorY = 1; // Store the last scale factor to smooth transitions
 
     function setup() {
       // Use p5.js to create a button and handle permission
@@ -87,6 +89,9 @@
       }
     }
 
+    // Low-pass filter constant (higher value = more smoothing, but slower response)
+    const smoothingFactor = 0.1;
+
     // Handle device orientation
     function handleOrientation(event) {
       if (!permissionGranted) return;
@@ -99,15 +104,18 @@
       const totalTilt = Math.abs(tiltX) + Math.abs(tiltY) + Math.abs(tiltZ);
 
       if (totalTilt > threshold) {
-        // Make scaling more sensitive based on tilt
-        let scaleFactorY = 1 - (totalTilt / 200); // Adjust 200 for sensitivity (lower it to increase sensitivity)
+        // Calculate a new scaling factor based on tilt
+        let newScaleFactorY = 1 - (totalTilt / 200); // Adjust 200 for sensitivity
 
-        // Limit the scaling range
-        if (scaleFactorY < 0.2) scaleFactorY = 0.2; // Set a lower minimum scale
-        if (scaleFactorY > 1.5) scaleFactorY = 1.5; // Set a higher maximum scale
+        // Clamp the scale values to avoid extreme shrinking/expanding
+        if (newScaleFactorY < 0.2) newScaleFactorY = 0.1;
+        if (newScaleFactorY > 1.5) newScaleFactorY = 2;
 
-        // Apply the scaling transformation to the Y-axis
-        titleDiv.style.transform = `scaleY(${scaleFactorY})`;
+        // Apply a low-pass filter to smooth out sudden changes
+        lastScaleFactorY = lastScaleFactorY + smoothingFactor * (newScaleFactorY - lastScaleFactorY);
+
+        // Apply the smoothed scaling transformation to the Y-axis
+        titleDiv.style.transform = `scaleY(${lastScaleFactorY})`;
       }
     }
   </script>
