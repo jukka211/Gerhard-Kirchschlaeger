@@ -86,21 +86,24 @@
     }
 
     // Call this function when the device is moved
-    function deviceMoved() {
-      if (!permissionGranted) return;
+  function deviceMoved() {
+  if (!permissionGranted) return;
 
-      const totalMovement = Math.abs(accelerationX) + Math.abs(accelerationY) + Math.abs(accelerationZ);
+  const totalMovement = Math.abs(accelerationX) + Math.abs(accelerationY) + Math.abs(accelerationZ);
 
-      if (totalMovement > threshold) {
-        // Calculate scaling factor based on device movement
-        let scaleFactorY = 1 - (totalMovement / 100); // Adjust 50 for sensitivity
-        if (scaleFactorY < 0.5) scaleFactorY = 0.2; // Limit the minimum scale to 0.5
-        if (scaleFactorY > 1) scaleFactorY = 3; // Prevent it from going above the original size
+  if (totalMovement > threshold) {
+    // Make scaling more sensitive by lowering the divisor
+    let scaleFactorY = 1 - (totalMovement / 20); // Lower divisor for more intensity (was 50)
 
-        // Apply the scaling transformation to the Y-axis
-        titleDiv.style.transform = `scaleY(${scaleFactorY})`;
-      }
-    }
+    // Allow more extreme scaling
+    if (scaleFactorY < 0.2) scaleFactorY = 0.2; // Set a lower minimum scale (was 0.5)
+    if (scaleFactorY > 1.5) scaleFactorY = 1.5; // Set a higher maximum scale (was 1)
+
+    // Apply the scaling transformation to the Y-axis
+    titleDiv.style.transform = `scaleY(${scaleFactorY})`;
+  }
+}
+
   </script>
 </body>
 </html>
