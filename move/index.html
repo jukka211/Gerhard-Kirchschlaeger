@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Device Motion Scaling</title>
 
+  <!-- Include p5.js library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+
   <!-- Style to ensure the text block is visible and centered -->
   <style>
     body, html {
@@ -12,16 +15,17 @@
       padding: 0;
       height: 100%;
       display: flex;
-      justify-content: left;
-      align-items: left;
+      justify-content: center;
+      align-items: center;
       font-size: 48px;
     }
-  a { color:black;}
+
     .text-mobile {
-      text-align: left;
+      text-align: center;
       transition: transform 0.3s ease; /* Smooth transition for scaling */
     }
-
+    a {
+      color:black;}
     #motionBtn {
       position: absolute;
       top: 10px;
@@ -36,7 +40,6 @@
   </style>
 </head>
 <body>
-  <button id="motionBtn">Allow Motion Access</button>
 
   <div class="text-mobile">
     <a href="">
@@ -47,21 +50,28 @@
     <a href="">Bahn<br>hofplatz 1<br>4600 Wels<br><span style="font-family: 'Freizeit140';">AT</span></a><br>
   </div>
 
+  <!-- Button for requesting motion permission -->
+  <button id="motionBtn">Allow Motion Access</button>
+
   <script>
     let permissionGranted = false;
     const threshold = 3; // Set a threshold for movement sensitivity
     const titleDiv = document.querySelector('.text-mobile');
-    const motionBtn = document.querySelector('#motionBtn');
 
-    // Function to request motion permission
+    function setup() {
+      // Use p5.js to create a button and handle permission
+      let button = select('#motionBtn');
+      button.mousePressed(requestMotionPermission);
+    }
+
     function requestMotionPermission() {
       if (typeof DeviceMotionEvent.requestPermission === 'function') {
         DeviceMotionEvent.requestPermission()
           .then(response => {
             if (response === 'granted') {
               permissionGranted = true;
-              motionBtn.style.display = 'none'; // Hide the button after permission is granted
               console.log('Motion permission granted');
+              select('#motionBtn').hide(); // Hide the button after granting permission
             } else {
               console.log('Motion permission denied');
             }
@@ -70,7 +80,7 @@
       } else {
         // For browsers that don't require permission (e.g., Android devices)
         permissionGranted = true;
-        motionBtn.style.display = 'none'; // Hide the button immediately
+        select('#motionBtn').hide();
       }
     }
 
@@ -90,15 +100,6 @@
         titleDiv.style.transform = `scaleY(${scaleFactorY})`;
       }
     }
-
-    // Attach an event listener to the button
-    motionBtn.addEventListener('click', requestMotionPermission);
-
-    // Request motion permission on button click
-    document.addEventListener('DOMContentLoaded', function () {
-      // Permission will be requested when the user clicks the button
-    });
-
   </script>
 </body>
 </html>
