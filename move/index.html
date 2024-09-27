@@ -192,11 +192,11 @@
         if (tiltY > 0) {
             newScaleFactorX = 1 - (tiltY / 100); // Compress for positive tilt
         } else {
-            newScaleFactorX = 1 + (-tiltY / 10); // Stretch for negative tilt
+            newScaleFactorX = 1 + (-tiltY / 100); // Stretch for negative tilt
         }
 
         // Clamp X-axis scaling
-        newScaleFactorX = Math.max(0.1, Math.min(newScaleFactorX, 13));
+        newScaleFactorX = Math.max(0.2, Math.min(newScaleFactorX, 1.2));
 
         // Apply low-pass filter to smooth out sudden changes for both axes
         lastScaleFactorY = lastScaleFactorY + smoothingFactor * (newScaleFactorY - lastScaleFactorY);
