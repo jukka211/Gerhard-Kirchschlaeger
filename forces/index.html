@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Device Tilt Falling Effect</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: flex-start;
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .title {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      font-family: 'Arial', sans-serif;
+      font-size: 5rem;
+      line-height: 83%;
+      user-select: none;
+      overflow: hidden;
+    }
+
+    .line {
+      letter-spacing: -5.5px;
+      display: flex;
+      width: 100%;
+    }
+
+    .line span {
+      display: inline-block;
+      cursor: pointer;
+      margin-right: 0;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1.1);
+    }
+
+    /* Button to request motion permission */
+    #motionBtn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      padding: 10px 20px;
+      background-color: #008CBA;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <button id="motionBtn">Enable Motion</button>
+
+  <div class="title">
+    <div class="line">
+      <span>G</span>
+      <span>e</span>
+      <span>r</span>
+      <span>h</span>
+      <span>a</span>
+      <span>r</span>
+      <span>d</span>
+    </div>
+    <div class="line">
+      <span>@</span>
+      <span>K</span>
+      <span>i</span>
+      <span>r</span>
+      <span>c</span>
+      <span>h</span>
+      <span>s</span>
+      <span>c</span>
+      <span>h</span>
+      <span>l</span>
+    </div>
+    <div class="line">
+      <span>a</span>
+      <span>e</span>
+      <span>g</span>
+      <span>e</span>
+      <span>r</span>
+    </div>
+    <div class="line">
+      <span>(</span>
+      <span>d</span>
+      <span>o</span>
+      <span>t</span>
+      <span>)</span>
+    </div>
+    <div class="line">
+      <span>a</span>
+      <span>t</span>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <script>
+    let movers = [];
+    let permissionGranted = false;
+    let deadZone = 5; // Dead zone to ignore small tilts
+    let lastUpdateTime = 0;
+    const updateInterval = 100; // Time between updates in milliseconds
+
+    function setup() {
+      // Create a button and handle motion permission
+      let button = select('#motionBtn');
+      button.mousePressed(requestMotionPermission);
+
+      // Initialize mover objects for each '.line' element
+      let lines = selectAll('.line');
+      lines.forEach((line, i) => {
+        movers.push(new Mover(line.elt, i * 80)); // Adjust initial Y position
+      });
+    }
+
+    function requestMotionPermission() {
+      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+          .then(response => {
+            if (response === 'granted') {
+              permissionGranted = true;
+              select('#motionBtn').hide();
+              window.addEventListener('deviceorientation', handleOrientation);
+            }
+          })
+          .catch(console.error);
+      } else {
+        permissionGranted = true;
+        select('#motionBtn').hide();
+        window.addEventListener('deviceorientation', handleOrientation);
+      }
+    }
+
+    class Mover {
+      constructor(element, initialY) {
+        this.mass = 1;
+        this.element = element;
+        this.position = createVector(0, initialY); // X=0 to position left; Y=initialY
+        this.velocity = createVector(0, 0);
+        this.acceleration = createVector(0, 0);
+      }
+
+      applyForce(force) {
+        let f = p5.Vector.div(force, this.mass);
+        this.acceleration.add(f);
+      }
+
+      update() {
+        this.velocity.add(this.acceleration);
+        this.position.add(this.velocity);
+        this.acceleration.mult(0);
+
+        // Update the position of the associated DOM element
+        this.element.style.transform = `translateY(${this.position.y}px)`;
+      }
+
+      checkEdges() {
+        let windowHeight = window.innerHeight;
+        if (this.position.y > windowHeight - this.element.offsetHeight) {
+          this.position.y = windowHeight - this.element.offsetHeight;
+          this.velocity.y *= -0.9; // Apply some bounce
+        } else if (this.position.y < 0) {
+          this.position.y = 0;
+          this.velocity.y *= -0.9; // Bounce off the top edge
+        }
+      }
+    }
+
+    function handleOrientation(event) {
+      if (!permissionGranted) return;
+
+      let tiltY = event.gamma; // Y-axis tilt (left-right)
+
+      // Apply dead zone
+      if (Math.abs(tiltY) < deadZone) {
+        return;
+      }
+
+      // Update the movers with gravitational force based on the tilt
+      let gravity = createVector(0, tiltY * 0.1); // Adjust the strength of the gravity
+
+      movers.forEach(mover => {
+        mover.applyForce(gravity);
+        mover.update();
+        mover.checkEdges();
+      });
+    }
+  </script>
+</body>
+</html>
