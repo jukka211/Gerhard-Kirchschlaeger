@@ -55,10 +55,11 @@
   <!-- Button for requesting motion permission -->
   <button id="motionBtn">Allow Motion Access</button>
 
- <script>
+<script>
     let permissionGranted = false;
     const titleDiv = document.querySelector('.text-mobile');
-    const threshold = 10; // Set threshold for when scaling starts based on Y-axis tilt
+    const threshold = 15; // Increase the threshold for when scaling starts based on X-axis tilt
+    const deadZone = 5; // Dead zone for small tilts (between -5 and 5 degrees)
     let lastScaleFactorY = 1; // Store the last scale factor to smooth transitions
 
     function setup() {
@@ -89,19 +90,24 @@
       }
     }
 
-    // Low-pass filter constant (higher value = more smoothing, but slower response)
-    const smoothingFactor = 0.1;
+    // Low-pass filter constant (increase for more smoothing)
+    const smoothingFactor = 0.05; // Increased for smoother transitions
 
-    // Handle device orientation (Y-axis tilt only)
+    // Handle device orientation (X-axis tilt only)
     function handleOrientation(event) {
       if (!permissionGranted) return;
 
-      const tiltY = event.gamma; // Y-axis (left-to-right tilt)
+      const tiltX = event.beta; // X-axis (front-to-back tilt)
 
-      // Only use tilt along Y-axis for scaling (ignore other axes)
-      if (Math.abs(tiltY) > threshold) {
-        // Calculate a new scaling factor based on Y-axis tilt
-        let newScaleFactorY = 1 - (Math.abs(tiltY) / 100); // Adjust 100 for sensitivity
+      // Apply dead zone to avoid twitching at small tilts
+      if (Math.abs(tiltX) < deadZone) {
+        return; // Ignore tilts within the dead zone
+      }
+
+      // Only apply scaling if tilt exceeds threshold
+      if (Math.abs(tiltX) > threshold) {
+        // Calculate a new scaling factor based on X-axis tilt
+        let newScaleFactorY = 1 - (Math.abs(tiltX) / 200); // Adjust 200 for sensitivity
 
         // Clamp the scale values to avoid extreme shrinking/expanding
         if (newScaleFactorY < 0.1) newScaleFactorY = 0.1;
@@ -114,6 +120,7 @@
         titleDiv.style.transform = `scaleY(${lastScaleFactorY})`;
       }
     }
-  </script>
+</script>
+
 </body>
 </html>
