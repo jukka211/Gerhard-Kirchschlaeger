@@ -63,43 +63,31 @@
 
   <div class="title">
     <div class="line">
-      <span>G</span>
-      <span>e</span>
-      <span>r</span>
-      <span>h</span>
-      <span>a</span>
-      <span>r</span>
-      <span>d</span>
+    Gerhard
     </div>
     <div class="line">
-      <span>@</span>
-      <span>K</span>
-      <span>i</span>
-      <span>r</span>
-      <span>c</span>
-      <span>h</span>
-      <span>s</span>
-      <span>c</span>
-      <span>h</span>
-      <span>l</span>
+     @Kirchschl
     </div>
     <div class="line">
-      <span>a</span>
-      <span>e</span>
-      <span>g</span>
-      <span>e</span>
-      <span>r</span>
+      aeger(dot)
     </div>
     <div class="line">
-      <span>(</span>
-      <span>d</span>
-      <span>o</span>
-      <span>t</span>
-      <span>)</span>
+     at++43(
     </div>
     <div class="line">
-      <span>a</span>
-      <span>t</span>
+     0)6763140
+    </div>
+    <div class="line">
+     568Bahn
+    </div>
+    <div class="line">
+    hofplatz 1
+    </div>
+    <div class="line">
+    4600 Wels
+    </div>
+    <div class="line">
+   AT
     </div>
   </div>
 
@@ -107,9 +95,9 @@
   <script>
     let movers = [];
     let permissionGranted = false;
-    let deadZone = 5; // Dead zone to ignore small tilts
+    let deadZone = 1; // Dead zone to ignore small tilts
     let lastUpdateTime = 0;
-    const updateInterval = 100; // Time between updates in milliseconds
+    const updateInterval = 50; // Time between updates in milliseconds
 
     function setup() {
       // Create a button and handle motion permission
@@ -168,10 +156,10 @@
         let windowHeight = window.innerHeight;
         if (this.position.y > windowHeight - this.element.offsetHeight) {
           this.position.y = windowHeight - this.element.offsetHeight;
-          this.velocity.y *= -0.9; // Apply some bounce
+          this.velocity.y *= -0.3; // Apply some bounce
         } else if (this.position.y < 0) {
           this.position.y = 0;
-          this.velocity.y *= -0.9; // Bounce off the top edge
+          this.velocity.y *= -0.3; // Bounce off the top edge
         }
       }
     }
