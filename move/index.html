@@ -59,6 +59,7 @@
       background:#FFFFFF;
       color:#000000;
       cursor: pointer;
+       z-index: 2; /* Ensure it stays on top */
       
     }
 
@@ -66,8 +67,9 @@
   position: fixed; /* Ensure it's always positioned on the screen */
   left: 0; /* Stick to the left side */
   bottom: 0; /* Start vertically centered */
-
-  z-index: 1000; /* Ensure it stays on top */
+ left: 50%; /* Start horizontally centered */
+  transform: translateX(-50%); /* Adjust horizontal centering */
+  z-index: 1; /* Ensure it stays on top */
  
 }
   </style>
@@ -149,7 +151,7 @@ function handleOrientation(event) {
   newXPosition = Math.max(0, Math.min(screenWidth - instagramButton.offsetWidth, newXPosition));
 
   instagramButton.style.position = 'fixed';
-  instagramButton.style.top = '50%'; // Keep vertically centered
+  instagramButton.style.bottom = '0'; // Keep it at the bottom of the screen
   instagramButton.style.left = `${newXPosition}px`; // Move left/right based on gamma (X-axis)
 
   // --- Text Scaling ---
