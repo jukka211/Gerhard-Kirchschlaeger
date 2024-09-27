@@ -116,7 +116,7 @@
       // Only apply scaling if tilt exceeds threshold
       if (Math.abs(tiltX) > threshold) {
         // Calculate a new scaling factor based on X-axis tilt
-        let newScaleFactorY = 1 - (Math.abs(tiltX) / 200); // Adjust 200 for sensitivity
+        let newScaleFactorY = 1 - (Math.abs(tiltX) / 100); // Adjust 200 for sensitivity
 
         // Clamp the scale values to avoid extreme shrinking/expanding
         if (newScaleFactorY < 0.1) newScaleFactorY = 0.1;
