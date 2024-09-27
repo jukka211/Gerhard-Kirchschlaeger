@@ -152,11 +152,11 @@
 
   if (tiltX > 0) {
     // When the device is tilted upward (positive tilt), compress from the top
-    newScaleFactorY = 1 - (tiltX / 75); // Shrink proportionally to tilt, adjusting 75 for sensitivity
+    newScaleFactorY = 1 - (tiltX / 35); // Shrink proportionally to tilt, adjusting 75 for sensitivity
     titleDiv.style.transformOrigin = 'top center'; // Compress from the top
   } else {
     // When the device is tilted downward (negative tilt), compress from the bottom
-    newScaleFactorY = 1 - (-tiltX / 75); // Shrink proportionally to tilt, adjusting 75 for sensitivity
+    newScaleFactorY = 1 - (-tiltX / 35); // Shrink proportionally to tilt, adjusting 75 for sensitivity
     titleDiv.style.transformOrigin = 'bottom center'; // Compress from the bottom
   }
 
