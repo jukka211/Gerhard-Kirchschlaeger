@@ -91,96 +91,116 @@
   <button id="motionBtn">[Allow Motion Access]</button>
 
 <script>
-let permissionGranted = false;
-const threshold = 15; // Tilt threshold for action
-const deadZone = 1; // Ignore small tilts
-const updateInterval = 50; // Minimum time between updates in ms
-const smoothingFactor = 0.15; // Smoothing for scaling changes
-let lastUpdateTime = 0; // Time tracking for updates
-let lastScaleFactorY = 1; // Store last Y-axis scale for smoother transitions
+let permissionGrantedForText = false;
+let permissionGrantedForButton = false;
 
-const titleDiv = document.querySelector('.text-mobile');
-const instagramButton = document.querySelector('.inst');
-
-// Request motion permission on user interaction
-function setup() {
+// --- TEXT SCALING ON X-TILT ---
+function setupTextScaling() {
   let button = document.querySelector('#motionBtn');
-  button.addEventListener('click', requestMotionPermission);
+  button.addEventListener('click', requestTextScalingPermission);
 }
 
-// Handle motion permission request
-function requestMotionPermission() {
+function requestTextScalingPermission() {
   if (typeof DeviceOrientationEvent.requestPermission === 'function') {
     DeviceOrientationEvent.requestPermission()
       .then(response => {
         if (response === 'granted') {
-          permissionGranted = true;
+          permissionGrantedForText = true;
           document.querySelector('#motionBtn').style.display = 'none'; // Hide the button
-          window.addEventListener('deviceorientation', handleOrientation);
+          window.addEventListener('deviceorientation', handleTextOrientation);
         } else {
-          console.log('Motion permission denied');
+          console.log('Motion permission denied for text scaling');
         }
       })
       .catch(console.error);
   } else {
-    permissionGranted = true;
+    permissionGrantedForText = true;
     document.querySelector('#motionBtn').style.display = 'none';
-    window.addEventListener('deviceorientation', handleOrientation);
+    window.addEventListener('deviceorientation', handleTextOrientation);
   }
 }
 
-// Handle device orientation and update both text scaling and Instagram button position
-function handleOrientation(event) {
-  if (!permissionGranted) return;
+function handleTextOrientation(event) {
+  if (!permissionGrantedForText) return;
 
-  const tiltY = event.beta;  // Y-axis for Instagram button (beta for up/down tilt)
-  const tiltX = event.gamma; // X-axis for text scaling (same as before)
+  const tiltX = event.gamma; // X-axis for text scaling
+  const deadZoneText = 1; // Ignore small tilts
+  const smoothingFactorText = 0.15;
+  let lastScaleFactorY = 1;
 
-  // Apply dead zone for minor tilts
-  if (Math.abs(tiltX) < deadZone && Math.abs(tiltY) < deadZone) return;
+  if (Math.abs(tiltX) < deadZoneText) return;
 
-  // Only update position and scaling if enough time has passed (debouncing)
-  const currentTime = Date.now();
-  if (currentTime - lastUpdateTime < updateInterval) return;
-  lastUpdateTime = currentTime;
-
-  // --- Instagram Button Movement (Move Along Y-axis) ---
-  const screenHeight = window.innerHeight;
-  let newYPosition = ((tiltY + 90) / 180) * screenHeight; // Map tiltY (-90 to 90) to screen height
-
-  // Limit the Y position within screen boundaries
-  newYPosition = Math.max(0, Math.min(screenHeight - instagramButton.offsetHeight, newYPosition));
-
-  instagramButton.style.position = 'fixed';
-  instagramButton.style.left = '0'; // Keep it on the left
-  instagramButton.style.bottom = `${newYPosition}px`; // Move up/down based on beta (Y-axis)
-
-  // --- Text Scaling ---
   let newScaleFactorY;
 
   if (tiltX > 0) {
-    // When tilted upward (positive tilt), stretch the text
     newScaleFactorY = 1 + (tiltX / 10);
   } else {
-    // When tilted downward (negative tilt), compress the text
     newScaleFactorY = 1 - (-tiltX / 75);
   }
 
-  // Clamp the scale values to avoid extreme changes
-  if (newScaleFactorY < 0.1) newScaleFactorY = 0.1; // Minimum compression
-  if (newScaleFactorY > 9) newScaleFactorY = 9; // Maximum stretch
+  // Clamp the scale values
+  if (newScaleFactorY < 0.1) newScaleFactorY = 0.1;
+  if (newScaleFactorY > 9) newScaleFactorY = 9;
 
-  // Apply smoothing to avoid sudden changes
-  lastScaleFactorY = lastScaleFactorY + smoothingFactor * (newScaleFactorY - lastScaleFactorY);
+  lastScaleFactorY = lastScaleFactorY + smoothingFactorText * (newScaleFactorY - lastScaleFactorY);
 
-  // Apply scaling to the Y-axis of the text
+  const titleDiv = document.querySelector('.text-mobile');
   titleDiv.style.transform = `scaleY(${lastScaleFactorY})`;
 }
 
-// Initialize the setup
-setup();
-</script>
+// --- INSTAGRAM BUTTON MOVEMENT ON Y-TILT ---
+function setupButtonMovement() {
+  let button = document.querySelector('#motionBtn');
+  button.addEventListener('click', requestButtonMovementPermission);
+}
 
+function requestButtonMovementPermission() {
+  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission()
+      .then(response => {
+        if (response === 'granted') {
+          permissionGrantedForButton = true;
+          window.addEventListener('deviceorientation', handleButtonOrientation);
+        } else {
+          console.log('Motion permission denied for button movement');
+        }
+      })
+      .catch(console.error);
+  } else {
+    permissionGrantedForButton = true;
+    window.addEventListener('deviceorientation', handleButtonOrientation);
+  }
+}
+
+function handleButtonOrientation(event) {
+  if (!permissionGrantedForButton) return;
+
+  const tiltY = event.beta; // Y-axis for Instagram button
+  const deadZoneButton = 1; // Ignore small tilts
+  const updateInterval = 50;
+  let lastUpdateTimeButton = 0;
+
+  const currentTime = Date.now();
+  if (currentTime - lastUpdateTimeButton < updateInterval) return;
+  lastUpdateTimeButton = currentTime;
+
+  if (Math.abs(tiltY) < deadZoneButton) return;
+
+  const screenHeight = window.innerHeight;
+  const instagramButton = document.querySelector('.inst');
+  let newYPosition = ((tiltY + 90) / 180) * screenHeight; // Map tilt to screen height
+
+  newYPosition = Math.max(0, Math.min(screenHeight - instagramButton.offsetHeight, newYPosition));
+
+  instagramButton.style.position = 'fixed';
+  instagramButton.style.left = '0'; // Keep on the left
+  instagramButton.style.bottom = `${newYPosition}px`; // Move up/down based on tiltY
+}
+
+// Initialize both setups
+setupTextScaling();
+setupButtonMovement();
+</script>
 
 </body>
 </html>
