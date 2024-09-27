@@ -123,10 +123,11 @@ function requestTextScalingPermission() {
 function handleTextOrientation(event) {
   if (!permissionGrantedForText) return;
 
-  const tiltX = event.gamma; // X-axis for text scaling
-  const deadZoneText = 1; // Ignore small tilts
-  const smoothingFactorText = 0.15;
-  let lastScaleFactorY = 1;
+ const threshold = 15; // Increase the threshold for when scaling starts based on X-axis tilt
+    const deadZone = 1; // Increase dead zone to ignore smaller tilts
+    let lastScaleFactorY = 1; // Store the last scale factor to smooth transitions
+    let lastUpdateTime = 0; // Track the last time the scaling was updated
+    const updateInterval = 50; // Minimum time between updates (in milliseconds)
 
   if (Math.abs(tiltX) < deadZoneText) return;
 
