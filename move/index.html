@@ -57,26 +57,41 @@
       color:black;
     text-decoration:none;}
     
-    #motionBtn {
+ #motionBtn {
       position: absolute;
       font-family: 'Freizeit', sans-serif;
       font-size: 1.5rem;
      
-      background:#FFFFFF;
+      background:#ffffff;
       color:#000000;
-      border: solid 1px black;
-      border-radius:20px;
+      width:100%;
+      height: 100%;
+      border: 0px;
       cursor: pointer;
        z-index: 3; /* Ensure it stays on top */
       
     }
- 
-    .inst {
+ .allow {
+  background:#FFFFFF;
+  color:#000000;
+  border: solid 1.4px black;
+  border-radius: 20px;
+  padding: 4px;
+ }
+
+ .allow:hover {
+  background-color: #000000;
+  color:#FFFFFF;
+ }
+      .inst {
   position: fixed; /* Ensure it's always positioned on the screen */
   left: 12px; /* Stick to the left side */
-  bottom: 12px; /* Start vertically centered */
-  height: 12px;
+  bottom: 8px; /* Start vertically centered */
   z-index: 1; /* Ensure it stays on top */
+ }
+ .inst img {
+  object-fit: contain;
+  width: 32px;
  }
  
   </style>
@@ -95,7 +110,7 @@
  
   <!-- Button for requesting motion permission -->
 
- <button id="motionBtn">Allow Motion Access</button>
+ <button id="motionBtn"><div class="allow" id="toggleSwitch">Allow Motion Access</div></button>
 
 
 <script>
