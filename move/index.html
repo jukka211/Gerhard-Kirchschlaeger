@@ -73,7 +73,76 @@
     <a href=""><span style="font-family: 'Freizeit140';">++43(</span><br>0)6763140<br>568</a>
     <a href="">Bahn<br>hofplatz 1<br>4600 Wels<br><span style="font-family: 'Freizeit140';">AT</span></a><br>
   </div>
+ <div class="inst"><img src="Vector.svg"></div>
+  <script>
+ let permissionGranted = false; 
+const threshold = 15; // Increase the threshold for when scaling starts based on Y-axis tilt
+let lastUpdateTime = 0; // Track the last time the scaling was updated
+const updateInterval = 50; // Minimum time between updates (in milliseconds)
+const smoothingFactor = 0.15; // Increase smoothing factor for even slower response
+const deadZone = 1; // Ignore small tilts to prevent jitter
 
+function setup() {
+  let button = select('#motionBtn');
+  button.mousePressed(requestMotionPermission);
+}
+
+function requestMotionPermission() {
+  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission()
+      .then(response => {
+        if (response === 'granted') {
+          permissionGranted = true;
+          console.log('Motion permission granted');
+          select('#motionBtn').hide(); // Hide the button after granting permission
+          window.addEventListener('deviceorientation', handleOrientation);
+        } else {
+          console.log('Motion permission denied');
+        }
+      })
+      .catch(console.error);
+  } else {
+    permissionGranted = true;
+    select('#motionBtn').hide();
+    window.addEventListener('deviceorientation', handleOrientation);
+  }
+}
+
+function handleOrientation(event) {
+  if (!permissionGranted) return;
+
+  const tiltY = event.beta; // Y-axis (front-to-back tilt)
+
+  // Apply dead zone to avoid twitching at small tilts
+  if (Math.abs(tiltY) < deadZone) {
+    return; // Ignore tilts within the dead zone
+  }
+
+  // Only update position if enough time has passed (debouncing)
+  const currentTime = Date.now();
+  if (currentTime - lastUpdateTime < updateInterval) {
+    return; // Skip this update if it's too soon
+  }
+  lastUpdateTime = currentTime; // Update the last update time
+
+  // Get the element that needs to be moved
+  const instagramButton = document.querySelector('.inst');
+
+  // Calculate new Y position based on tilt
+  const screenHeight = window.innerHeight; // Get screen height
+  let newYPosition = (tiltY / 180) * screenHeight; // Map tilt to screen height
+
+  // Limit the Y position within screen boundaries
+  newYPosition = Math.max(0, Math.min(screenHeight - instagramButton.offsetHeight, newYPosition));
+
+  // Apply the new position to the Instagram button
+  instagramButton.style.position = 'fixed'; // Ensure the button stays fixed on the screen
+  instagramButton.style.left = '0'; // Stick it to the left
+  instagramButton.style.top = `${newYPosition}px`; // Apply the calculated Y position
+}
+
+    
+  </script>
   <!-- Button for requesting motion permission -->
   <button id="motionBtn">[Allow Motion Access]</button>
 
