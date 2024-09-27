@@ -130,8 +130,8 @@ function requestMotionPermission() {
 function handleOrientation(event) {
   if (!permissionGranted) return;
 
-  const tiltY = event.beta; // Y-axis (front-to-back tilt) for button
-  const tiltX = event.beta; // X-axis for text scaling (reuse the same beta value)
+  const tiltY = event.beta;  // X-axis scaling (same as before)
+  const tiltX = event.gamma; // Y-axis for Instagram button (now changed to gamma)
 
   // Apply dead zone for minor tilts
   if (Math.abs(tiltX) < deadZone && Math.abs(tiltY) < deadZone) return;
@@ -141,24 +141,26 @@ function handleOrientation(event) {
   if (currentTime - lastUpdateTime < updateInterval) return;
   lastUpdateTime = currentTime;
 
-  // --- Instagram Button Movement ---
-  const screenHeight = window.innerHeight;
-  let newYPosition = (tiltY / 180) * screenHeight; // Map tilt to screen height
-  newYPosition = Math.max(0, Math.min(screenHeight - instagramButton.offsetHeight, newYPosition));
+  // --- Instagram Button Movement (Move Along X-axis) ---
+  const screenWidth = window.innerWidth;
+  let newXPosition = ((tiltX + 90) / 180) * screenWidth; // Map tiltX (-90 to 90) to screen width
+
+  // Limit the X position within screen boundaries
+  newXPosition = Math.max(0, Math.min(screenWidth - instagramButton.offsetWidth, newXPosition));
 
   instagramButton.style.position = 'fixed';
-  instagramButton.style.left = '0'; // Stick to the left
-  instagramButton.style.top = `${newYPosition}px`; // Update Y position based on tilt
+  instagramButton.style.top = '50%'; // Keep vertically centered
+  instagramButton.style.left = `${newXPosition}px`; // Move left/right based on gamma (X-axis)
 
   // --- Text Scaling ---
   let newScaleFactorY;
 
-  if (tiltX > 0) {
+  if (tiltY > 0) {
     // When tilted upward (positive tilt), stretch the text
-    newScaleFactorY = 1 + (tiltX / 10);
+    newScaleFactorY = 1 + (tiltY / 10);
   } else {
     // When tilted downward (negative tilt), compress the text
-    newScaleFactorY = 1 - (-tiltX / 75);
+    newScaleFactorY = 1 - (-tiltY / 75);
   }
 
   // Clamp the scale values to avoid extreme changes
