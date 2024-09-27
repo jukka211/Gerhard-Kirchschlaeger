@@ -95,40 +95,45 @@
     // Low-pass filter constant (higher value = more smoothing, but slower response)
     const smoothingFactor = 0.15; // Increase smoothing factor for even slower response
 
-    // Handle device orientation (X-axis tilt only)
     function handleOrientation(event) {
-      if (!permissionGranted) return;
+  if (!permissionGranted) return;
 
-      const tiltX = event.beta; // X-axis (front-to-back tilt)
+  const tiltX = event.beta; // X-axis (front-to-back tilt)
 
-      // Apply dead zone to avoid twitching at small tilts
-      if (Math.abs(tiltX) < deadZone) {
-        return; // Ignore tilts within the dead zone
-      }
+  // Apply dead zone to avoid twitching at small tilts
+  if (Math.abs(tiltX) < deadZone) {
+    return; // Ignore tilts within the dead zone
+  }
 
-      // Only update scaling if enough time has passed (debouncing)
-      const currentTime = Date.now();
-      if (currentTime - lastUpdateTime < updateInterval) {
-        return; // Skip this update if it's too soon
-      }
-      lastUpdateTime = currentTime; // Update the last update time
+  // Only update scaling if enough time has passed (debouncing)
+  const currentTime = Date.now();
+  if (currentTime - lastUpdateTime < updateInterval) {
+    return; // Skip this update if it's too soon
+  }
+  lastUpdateTime = currentTime; // Update the last update time
 
-      // Only apply scaling if tilt exceeds threshold
-      if (Math.abs(tiltX) > threshold) {
-        // Calculate a new scaling factor based on X-axis tilt
-        let newScaleFactorY = 1 - (Math.abs(tiltX) / 50); // Adjust 200 for sensitivity
+  // Map the tilt to a scaling factor that compresses for positive tilt and stretches for negative tilt
+  let newScaleFactorY;
 
-        // Clamp the scale values to avoid extreme shrinking/expanding
-        if (newScaleFactorY < 0.1) newScaleFactorY = 0.1;
-        if (newScaleFactorY > 2) newScaleFactorY = 2;
+  if (tiltX > 0) {
+    // When the device is tilted upward (positive tilt), compress the text
+    newScaleFactorY = 1 - (tiltX / 100); // Adjust 100 for sensitivity
+  } else {
+    // When the device is tilted downward (negative tilt), stretch the text
+    newScaleFactorY = 1 + (-tiltX / 100); // Adjust 100 for sensitivity
+  }
 
-        // Apply a low-pass filter to smooth out sudden changes
-        lastScaleFactorY = lastScaleFactorY + smoothingFactor * (newScaleFactorY - lastScaleFactorY);
+  // Clamp the scale values to avoid extreme shrinking/expanding
+  if (newScaleFactorY < 0.5) newScaleFactorY = 0.5; // Limit minimum compression
+  if (newScaleFactorY > 2) newScaleFactorY = 2; // Limit maximum stretch
 
-        // Apply the smoothed scaling transformation to the Y-axis
-        titleDiv.style.transform = `scaleY(${lastScaleFactorY})`;
-      }
-    }
+  // Apply a low-pass filter to smooth out sudden changes
+  lastScaleFactorY = lastScaleFactorY + smoothingFactor * (newScaleFactorY - lastScaleFactorY);
+
+  // Apply the smoothed scaling transformation to the Y-axis
+  titleDiv.style.transform = `scaleY(${lastScaleFactorY})`;
+}
+  
 </script>
 
 
