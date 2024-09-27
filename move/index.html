@@ -135,19 +135,20 @@
   let newScaleFactorY;
 
   if (tiltX > 0) {
-    // When the device is tilted upward (positive tilt), compress the text
-    newScaleFactorY = 1 - (tiltX / 50); // Adjust 100 for sensitivity
-  } else {
-    // When the device is tilted downward (negative tilt), stretch the text
-    newScaleFactorY = 1 + (-tiltX / 50); // Adjust 100 for sensitivity
-  }
+  // When the device is tilted upward (positive tilt), stretch the text
+  newScaleFactorY = 1 + (tiltX / 50); // Adjust 50 for sensitivity
+} else {
+  // When the device is tilted downward (negative tilt), compress the text
+  newScaleFactorY = 1 - (-tiltX / 50); // Adjust 50 for sensitivity
+}
 
-  // Clamp the scale values to avoid extreme shrinking/expanding
-  if (newScaleFactorY < 0.1) newScaleFactorY = 0.1; // Limit minimum compression
-  if (newScaleFactorY > 3) newScaleFactorY = 3; // Limit maximum stretch
+// Clamp the scale values to avoid extreme shrinking/expanding
+if (newScaleFactorY < 0.1) newScaleFactorY = 0.1; // Limit minimum compression
+if (newScaleFactorY > 3) newScaleFactorY = 3; // Limit maximum stretch
 
-  // Apply a low-pass filter to smooth out sudden changes
-  lastScaleFactorY = lastScaleFactorY + smoothingFactor * (newScaleFactorY - lastScaleFactorY);
+// Apply a low-pass filter to smooth out sudden changes
+lastScaleFactorY = lastScaleFactorY + smoothingFactor * (newScaleFactorY - lastScaleFactorY);
+
 
   // Apply the smoothed scaling transformation to the Y-axis
   titleDiv.style.transform = `scaleY(${lastScaleFactorY})`;
