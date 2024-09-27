@@ -14,16 +14,30 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 24px;
+      font-size: 48px;
     }
-
+  a { color:black;}
     .text-mobile {
       text-align: center;
       transition: transform 0.3s ease; /* Smooth transition for scaling */
     }
+
+    #motionBtn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
+  <button id="motionBtn">Allow Motion Access</button>
+
   <div class="text-mobile">
     <a href="">
       <span style="font-family: 'Freizeit140';">Gerhard<br></span>
@@ -37,20 +51,26 @@
     let permissionGranted = false;
     const threshold = 3; // Set a threshold for movement sensitivity
     const titleDiv = document.querySelector('.text-mobile');
+    const motionBtn = document.querySelector('#motionBtn');
 
+    // Function to request motion permission
     function requestMotionPermission() {
       if (typeof DeviceMotionEvent.requestPermission === 'function') {
         DeviceMotionEvent.requestPermission()
           .then(response => {
             if (response === 'granted') {
               permissionGranted = true;
+              motionBtn.style.display = 'none'; // Hide the button after permission is granted
               console.log('Motion permission granted');
+            } else {
+              console.log('Motion permission denied');
             }
           })
           .catch(console.error);
       } else {
-        // For browsers that don't require permission
+        // For browsers that don't require permission (e.g., Android devices)
         permissionGranted = true;
+        motionBtn.style.display = 'none'; // Hide the button immediately
       }
     }
 
@@ -71,10 +91,14 @@
       }
     }
 
-    // Request motion permission on load
+    // Attach an event listener to the button
+    motionBtn.addEventListener('click', requestMotionPermission);
+
+    // Request motion permission on button click
     document.addEventListener('DOMContentLoaded', function () {
-      requestMotionPermission();
+      // Permission will be requested when the user clicks the button
     });
+
   </script>
 </body>
 </html>
