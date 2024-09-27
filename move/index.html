@@ -152,15 +152,16 @@
 
   if (tiltX > 0) {
   // When the device is tilted upward (positive tilt), stretch the text
-  newScaleFactorY = 1 - (-tiltX / 75); // Adjust 50 for sensitivity
+   newScaleFactorY = 1 + (tiltX / 10); // Adjust 50 for sensitivity
 } else {
   // When the device is tilted downward (negative tilt), compress the text
-  newScaleFactorY = 1 + (tiltX / 10); // Adjust 50 for sensitivity
+ 
+  newScaleFactorY = 1 - (-tiltX / 75); // Adjust 50 for sensitivity
 }
 
 // Clamp the scale values to avoid extreme shrinking/expanding
 if (newScaleFactorY < 0.1) newScaleFactorY = 0.1; // Limit minimum compression
-if (newScaleFactorY > 9) newScaleFactorY = 9; // Limit maximum stretch
+if (newScaleFactorY > 6) newScaleFactorY = 6; // Limit maximum stretch
 
 // Apply a low-pass filter to smooth out sudden changes
 lastScaleFactorY = lastScaleFactorY + smoothingFactor * (newScaleFactorY - lastScaleFactorY);
