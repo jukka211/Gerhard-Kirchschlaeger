@@ -70,18 +70,7 @@
        z-index: 3; /* Ensure it stays on top */
       
     }
-  #fullscreenBackground {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vh;
-    height: 100vw;
-    background-color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2; /* Makes sure the background and button are on top */
-}
+ 
     .inst {
   position: fixed; /* Ensure it's always positioned on the screen */
   left: 12px; /* Stick to the left side */
@@ -105,15 +94,10 @@
  <div class="inst"><img src="Vector.svg"></div>
  
   <!-- Button for requesting motion permission -->
-  <div id="fullscreenBackground">
-        <button id="motionBtn">Allow Motion Access</button>
-    </div>
-<script>
-  document.getElementById('motionBtn').addEventListener('click', function() {
-    // Hide the button when clicked
-    document.getElementById('fullscreenBackground').style.display = 'none';
-});
-</script>
+
+ <button id="motionBtn">Allow Motion Access</button>
+
+
 <script>
     let permissionGranted = false;
     const titleDiv = document.querySelector('.text-mobile');
