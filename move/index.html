@@ -59,7 +59,7 @@
     let permissionGranted = false;
     const titleDiv = document.querySelector('.text-mobile');
     const threshold = 15; // Increase the threshold for when scaling starts based on X-axis tilt
-    const deadZone = 10; // Increase dead zone to ignore smaller tilts
+    const deadZone = 5; // Increase dead zone to ignore smaller tilts
     let lastScaleFactorY = 1; // Store the last scale factor to smooth transitions
     let lastUpdateTime = 0; // Track the last time the scaling was updated
     const updateInterval = 100; // Minimum time between updates (in milliseconds)
