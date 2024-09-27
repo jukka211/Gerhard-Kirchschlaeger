@@ -24,7 +24,8 @@
 
     .text-mobile {
       text-align: left;
-      transition: transform 0.1s ease; /* Smooth transition for scaling */
+      transition: transform 0.1s ease; 
+       transform-origin: top center;/* Smooth transition for scaling */
     }
     a {
       color:black;
@@ -57,8 +58,7 @@
  <script>
     let permissionGranted = false;
     const titleDiv = document.querySelector('.text-mobile');
-    const threshold = 10; // Adjust the threshold for tilt sensitivity
-
+    const threshold = 10; // Set threshold for when scaling starts based on Y-axis tilt
     let lastScaleFactorY = 1; // Store the last scale factor to smooth transitions
 
     function setup() {
@@ -92,24 +92,20 @@
     // Low-pass filter constant (higher value = more smoothing, but slower response)
     const smoothingFactor = 0.1;
 
-    // Handle device orientation
+    // Handle device orientation (Y-axis tilt only)
     function handleOrientation(event) {
       if (!permissionGranted) return;
 
-      const tiltX = event.beta; // X-axis (front-to-back tilt)
       const tiltY = event.gamma; // Y-axis (left-to-right tilt)
-      const tiltZ = event.alpha; // Z-axis (rotation around the axis)
 
-      // Calculate the total tilt based on X, Y, and Z axis tilts
-      const totalTilt = Math.abs(tiltX) + Math.abs(tiltY) + Math.abs(tiltZ);
-
-      if (totalTilt > threshold) {
-        // Calculate a new scaling factor based on tilt
-        let newScaleFactorY = 1 - (totalTilt / 200); // Adjust 200 for sensitivity
+      // Only use tilt along Y-axis for scaling (ignore other axes)
+      if (Math.abs(tiltY) > threshold) {
+        // Calculate a new scaling factor based on Y-axis tilt
+        let newScaleFactorY = 1 - (Math.abs(tiltY) / 100); // Adjust 100 for sensitivity
 
         // Clamp the scale values to avoid extreme shrinking/expanding
-        if (newScaleFactorY < 0.2) newScaleFactorY = 0.1;
-        if (newScaleFactorY > 1.5) newScaleFactorY = 2;
+        if (newScaleFactorY < 0.1) newScaleFactorY = 0.1;
+        if (newScaleFactorY > 2) newScaleFactorY = 2;
 
         // Apply a low-pass filter to smooth out sudden changes
         lastScaleFactorY = lastScaleFactorY + smoothingFactor * (newScaleFactorY - lastScaleFactorY);
