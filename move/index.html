@@ -3,37 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Device Moved Triangle</title>
+  <title>Device Motion Scaling</title>
 
-  <!-- Link to the p5.js library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-
+  <!-- Style to ensure the text block is visible and centered -->
   <style>
     body, html {
       margin: 0;
       padding: 0;
-      overflow: hidden;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+    }
+
+    .text-mobile {
+      text-align: center;
+      transition: transform 0.3s ease; /* Smooth transition for scaling */
     }
   </style>
 </head>
 <body>
-  <h1>Triangle Color Change on Motion</h1>
-  <p>Click the button below to allow motion detection.</p>
-  <button id="motionBtn">Allow Motion Access</button>
+  <div class="text-mobile">
+    <a href="">
+      <span style="font-family: 'Freizeit140';">Gerhard<br></span>
+      @Kirchschl<br>aeger<span style="font-family: 'Freizeit140';">(dot)</span><br>at
+    </a>
+    <a href=""><span style="font-family: 'Freizeit140';">++43(</span><br>0)6763140<br>568</a>
+    <a href="">Bahn<br>hofplatz 1<br>4600 Wels<br><span style="font-family: 'Freizeit140';">AT</span></a><br>
+  </div>
 
   <script>
-    let value = 0;
     let permissionGranted = false;
-
-    function setup() {
-      // Create a full screen canvas
-      createCanvas(windowWidth, windowHeight);
-      background(255); // Set a white background to make the triangle visible
-
-      // Button to request permission
-      let button = select('#motionBtn');
-      button.mousePressed(requestMotionPermission);
-    }
+    const threshold = 3; // Set a threshold for movement sensitivity
+    const titleDiv = document.querySelector('.text-mobile');
 
     function requestMotionPermission() {
       if (typeof DeviceMotionEvent.requestPermission === 'function') {
@@ -42,47 +45,36 @@
             if (response === 'granted') {
               permissionGranted = true;
               console.log('Motion permission granted');
-              select('#motionBtn').hide(); // Hide the button after granting permission
-            } else {
-              console.log('Motion permission denied');
             }
           })
           .catch(console.error);
       } else {
-        // For browsers that don't require permission (e.g., Android devices)
+        // For browsers that don't require permission
         permissionGranted = true;
-        select('#motionBtn').hide();
       }
     }
 
-    function draw() {
-      // Clear the background on every frame to avoid overlap
-      background(255);
-
-      // Set the fill color based on the "value" variable
-      fill(value, 100, 150);
-
-      // Draw the triangle
-      triangle(windowWidth / 2 - 50, windowHeight / 2 + 50, windowWidth / 2, windowHeight / 2 - 50, windowWidth / 2 + 50, windowHeight / 2 + 50);
-    }
-
+    // Call this function when the device is moved
     function deviceMoved() {
-      if (!permissionGranted) {
-        return;
-      }
+      if (!permissionGranted) return;
 
-      // Increment the value by 10
-      value += 10;
+      const totalMovement = Math.abs(accelerationX) + Math.abs(accelerationY) + Math.abs(accelerationZ);
 
-      // Reset the value if it exceeds 255
-      if (value > 255) {
-        value = 0;
+      if (totalMovement > threshold) {
+        // Calculate scaling factor based on device movement
+        let scaleFactorY = 1 - (totalMovement / 50); // Adjust 50 for sensitivity
+        if (scaleFactorY < 0.5) scaleFactorY = 0.5; // Limit the minimum scale to 0.5
+        if (scaleFactorY > 1) scaleFactorY = 1; // Prevent it from going above the original size
+
+        // Apply the scaling transformation to the Y-axis
+        titleDiv.style.transform = `scaleY(${scaleFactorY})`;
       }
     }
 
-    function windowResized() {
-      resizeCanvas(windowWidth, windowHeight);
-    }
+    // Request motion permission on load
+    document.addEventListener('DOMContentLoaded', function () {
+      requestMotionPermission();
+    });
   </script>
 </body>
 </html>
