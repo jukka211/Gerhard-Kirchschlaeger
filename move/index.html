@@ -91,7 +91,7 @@
  }
  .inst img {
   object-fit: contain;
-  width: 32px;
+  width: 28px;
  }
  
   </style>
@@ -175,7 +175,7 @@
 
   if (tiltX > 0) {
   // When the device is tilted upward (positive tilt), compress the text
-  newScaleFactorY = 1 - (tiltX / 75); // Adjust 75 for sensitivity
+  newScaleFactorY = 1 - (tiltX / 100); // Adjust 75 for sensitivity
 } else {
   // When the device is tilted downward (negative tilt), stretch the text
   newScaleFactorY = 1 + (-tiltX / 10); // Adjust 10 for sensitivity
@@ -183,7 +183,7 @@
 
 // Clamp the scale values to avoid extreme shrinking/expanding
 if (newScaleFactorY < 0.1) newScaleFactorY = 0.1; // Limit minimum compression
-if (newScaleFactorY > 10) newScaleFactorY = 10; // Limit maximum stretch
+if (newScaleFactorY > 13) newScaleFactorY = 13; // Limit maximum stretch
 
 // Apply a low-pass filter to smooth out sudden changes
 lastScaleFactorY = lastScaleFactorY + smoothingFactor * (newScaleFactorY - lastScaleFactorY);
