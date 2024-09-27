@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Device Motion Scaling</title>
+
+  <!-- Include p5.js library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+
+  <!-- Style to ensure the text block is visible and centered -->
+  <style>
+    @font-face {
+    font-family: 'Freizeit140';
+    src: url('Freizeit140-Regular.otf');
+}
+
+@font-face {
+    font-family: 'Freizeit';
+    src: url('Freizeit-Regular.otf');
+}
+    #defaultCanvas0 {
+      display:none}
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      width:100vw;
+      display: flex;
+      justify-content: left;
+      align-items: left;
+      overflow: hidden;
+      
+    }
+
+    .text-mobile {
+      width:100vw;
+      font-family: 'Freizeit', sans-serif; /* Added fallback font */
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1.1); /* Bouncy effect */
+      user-select: none;
+      overflow: hidden; /* Prevent scrolling */
+      font-size: 4rem;
+      line-height: 3.5rem;
+      letter-spacing: -2.5px;
+      text-align: left;
+     
+      transform-origin: top center;/* Smooth transition for scaling */
+    }
+    a {
+      color:black;
+    text-decoration:none;}
+ 
+    #motionBtn {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .inst {
+      position: fixed;
+      width: 50px;
+      height: 50px;
+     
+      bottom: 0;
+      left: 0;
+    }
+  
+  </style>
+</head>
+<body>
+
+  <div class="text-mobile">
+    <a href="">
+      <span style="font-family: 'Freizeit140';">Gerhard<br></span>
+      @Kirchschl<br>aeger<span style="font-family: 'Freizeit140';">(dot)</span><br>at
+    </a>
+    <a href=""><span style="font-family: 'Freizeit140';">++43(</span><br>0)6763140<br>568</a>
+    <a href="">Bahn<br>hofplatz 1<br>4600 Wels<br><span style="font-family: 'Freizeit140';">AT</span></a><br>
+  </div>
+ <div class="inst"><img src="Vector.svg"></div>
+ <button id="motionBtn">Enable Motion</button>
+  <!-- Button for requesting motion permission -->
+
+
+  <script>
+    let permissionGranted = false;
+    const smoothingFactor = 0.15; // Low-pass filter constant for smoothing movement
+
+    // Initialize the setup
+    function setup() {
+      // Create the permission button and handle the click
+      let button = document.getElementById('motionBtn');
+      button.addEventListener('click', requestMotionPermission);
+    }
+
+    // Request motion permission for iOS or set permission for Android
+    function requestMotionPermission() {
+      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+          .then(response => {
+            if (response === 'granted') {
+              permissionGranted = true;
+              console.log('Motion permission granted');
+              document.getElementById('motionBtn').style.display = 'none'; // Hide the button
+              window.addEventListener('deviceorientation', handleOrientation);
+            } else {
+              console.log('Motion permission denied');
+            }
+          })
+          .catch(console.error);
+      } else {
+        // For browsers that don't require permission (e.g., Android devices)
+        permissionGranted = true;
+        document.getElementById('motionBtn').style.display = 'none';
+        window.addEventListener('deviceorientation', handleOrientation);
+      }
+    }
+
+    let lastX = 0, lastY = 0; // Store the last position to apply smoothing
+
+    // Handle device orientation and move the button
+    function handleOrientation(event) {
+      if (!permissionGranted) return;
+
+      const tiltY = event.beta; // Vertical tilt (-90 to +90)
+      const tiltX = event.gamma; // Horizontal tilt (-90 to +90)
+
+      const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
+      const instagramButton = document.querySelector('.inst');
+
+      // Map tiltY (beta) to vertical position
+      let newYPosition = ((tiltY + 90) / 180) * screenHeight;
+      newYPosition = Math.max(0, Math.min(screenHeight - instagramButton.offsetHeight, newYPosition));
+
+      // Map tiltX (gamma) to horizontal position
+      let newXPosition = ((tiltX + 90) / 180) * screenWidth;
+      newXPosition = Math.max(0, Math.min(screenWidth - instagramButton.offsetWidth, newXPosition));
+
+      // Apply smoothing using a low-pass filter
+      lastX = lastX + (newXPosition - lastX) * smoothingFactor;
+      lastY = lastY + (newYPosition - lastY) * smoothingFactor;
+
+      // Update the button position
+      instagramButton.style.left = `${lastX}px`;
+      instagramButton.style.top = `${lastY}px`;
+    }
+
+    // Start the setup on page load
+    window.addEventListener('DOMContentLoaded', setup);
+  </script>
+
+</body>
+</html>
