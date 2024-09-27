@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Device Moved Triangle</title>
+
+  <!-- Link to the p5.js library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <h1>Triangle Color Change on Motion</h1>
+  <p>Click the button below to allow motion detection.</p>
+  <button id="motionBtn">Allow Motion Access</button>
+
+  <script>
+    let value = 0;
+    let permissionGranted = false;
+
+    function setup() {
+      // Create a full screen canvas
+      createCanvas(windowWidth, windowHeight);
+      background(255); // Set a white background to make the triangle visible
+
+      // Button to request permission
+      let button = select('#motionBtn');
+      button.mousePressed(requestMotionPermission);
+    }
+
+    function requestMotionPermission() {
+      if (typeof DeviceMotionEvent.requestPermission === 'function') {
+        DeviceMotionEvent.requestPermission()
+          .then(response => {
+            if (response === 'granted') {
+              permissionGranted = true;
+              console.log('Motion permission granted');
+              select('#motionBtn').hide(); // Hide the button after granting permission
+            } else {
+              console.log('Motion permission denied');
+            }
+          })
+          .catch(console.error);
+      } else {
+        // For browsers that don't require permission (e.g., Android devices)
+        permissionGranted = true;
+        select('#motionBtn').hide();
+      }
+    }
+
+    function draw() {
+      // Clear the background on every frame to avoid overlap
+      background(255);
+
+      // Set the fill color based on the "value" variable
+      fill(value, 100, 150);
+
+      // Draw the triangle
+      triangle(windowWidth / 2 - 50, windowHeight / 2 + 50, windowWidth / 2, windowHeight / 2 - 50, windowWidth / 2 + 50, windowHeight / 2 + 50);
+    }
+
+    function deviceMoved() {
+      if (!permissionGranted) {
+        return;
+      }
+
+      // Increment the value by 10
+      value += 10;
+
+      // Reset the value if it exceeds 255
+      if (value > 255) {
+        value = 0;
+      }
+    }
+
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+    }
+  </script>
+</body>
+</html>
