@@ -15,17 +15,18 @@
       padding: 0;
       height: 100%;
       display: flex;
-      justify-content: center;
-      align-items: center;
+      justify-content: left;
+      align-items: left;
       font-size: 48px;
     }
 
     .text-mobile {
-      text-align: center;
+      text-align: left;
       transition: transform 0.3s ease; /* Smooth transition for scaling */
     }
     a {
-      color:black;}
+      color:black;
+    text-decoration:none;}
     #motionBtn {
       position: absolute;
       top: 10px;
@@ -92,9 +93,9 @@
 
       if (totalMovement > threshold) {
         // Calculate scaling factor based on device movement
-        let scaleFactorY = 1 - (totalMovement / 50); // Adjust 50 for sensitivity
-        if (scaleFactorY < 0.5) scaleFactorY = 0.5; // Limit the minimum scale to 0.5
-        if (scaleFactorY > 1) scaleFactorY = 1; // Prevent it from going above the original size
+        let scaleFactorY = 1 - (totalMovement / 100); // Adjust 50 for sensitivity
+        if (scaleFactorY < 0.5) scaleFactorY = 0.2; // Limit the minimum scale to 0.5
+        if (scaleFactorY > 1) scaleFactorY = 3; // Prevent it from going above the original size
 
         // Apply the scaling transformation to the Y-axis
         titleDiv.style.transform = `scaleY(${scaleFactorY})`;
