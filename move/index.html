@@ -68,11 +68,12 @@
   position: fixed; /* Ensure it's always positioned on the screen */
   left: 12px; /* Stick to the left side */
   bottom: 6px; /* Start vertically centered */
- 
+  height: 24px;
   z-index: 1; /* Ensure it stays on top */
+ }
+    button {
+  border: 1px solid black;
   
-      
- 
 }
   </style>
 </head>
@@ -89,7 +90,7 @@
  <div class="inst"><img src="Vector.svg"></div>
  
   <!-- Button for requesting motion permission -->
-  <button id="motionBtn">[Allow Motion Access]</button>
+   <button id="motionBtn"><button>Allow Motion Access</button></button>
 
 <script>
     let permissionGranted = false;
