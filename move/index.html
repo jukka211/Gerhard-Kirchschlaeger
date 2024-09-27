@@ -67,11 +67,10 @@
   position: fixed; /* Ensure it's always positioned on the screen */
   left: 0; /* Stick to the left side */
   bottom: 0; /* Start vertically centered */
- left: 50%; /* Start horizontally centered */
-  transform: translateX(-50%); /* Adjust horizontal centering */
+
   z-index: 1; /* Ensure it stays on top */
-      background-color:#FFFFFF;
-      border-radius:10px;
+  
+      
  
 }
   </style>
@@ -134,8 +133,8 @@ function requestMotionPermission() {
 function handleOrientation(event) {
   if (!permissionGranted) return;
 
-  const tiltY = event.beta;  // X-axis scaling (same as before)
-  const tiltX = event.gamma; // Y-axis for Instagram button (now changed to gamma)
+  const tiltY = event.beta;  // Y-axis for Instagram button (beta for up/down tilt)
+  const tiltX = event.gamma; // X-axis for text scaling (same as before)
 
   // Apply dead zone for minor tilts
   if (Math.abs(tiltX) < deadZone && Math.abs(tiltY) < deadZone) return;
@@ -145,26 +144,26 @@ function handleOrientation(event) {
   if (currentTime - lastUpdateTime < updateInterval) return;
   lastUpdateTime = currentTime;
 
-  // --- Instagram Button Movement (Move Along X-axis) ---
-  const screenWidth = window.innerWidth;
-  let newXPosition = ((tiltX + 90) / 180) * screenWidth; // Map tiltX (-90 to 90) to screen width
+  // --- Instagram Button Movement (Move Along Y-axis) ---
+  const screenHeight = window.innerHeight;
+  let newYPosition = ((tiltY + 90) / 180) * screenHeight; // Map tiltY (-90 to 90) to screen height
 
-  // Limit the X position within screen boundaries
-  newXPosition = Math.max(0, Math.min(screenWidth - instagramButton.offsetWidth, newXPosition));
+  // Limit the Y position within screen boundaries
+  newYPosition = Math.max(0, Math.min(screenHeight - instagramButton.offsetHeight, newYPosition));
 
   instagramButton.style.position = 'fixed';
-  instagramButton.style.bottom = '0'; // Keep it at the bottom of the screen
-  instagramButton.style.left = `${newXPosition}px`; // Move left/right based on gamma (X-axis)
+  instagramButton.style.left = '0'; // Keep it on the left
+  instagramButton.style.bottom = `${newYPosition}px`; // Move up/down based on beta (Y-axis)
 
   // --- Text Scaling ---
   let newScaleFactorY;
 
-  if (tiltY > 0) {
+  if (tiltX > 0) {
     // When tilted upward (positive tilt), stretch the text
-    newScaleFactorY = 1 + (tiltY / 10);
+    newScaleFactorY = 1 + (tiltX / 10);
   } else {
     // When tilted downward (negative tilt), compress the text
-    newScaleFactorY = 1 - (-tiltY / 75);
+    newScaleFactorY = 1 - (-tiltX / 75);
   }
 
   // Clamp the scale values to avoid extreme changes
