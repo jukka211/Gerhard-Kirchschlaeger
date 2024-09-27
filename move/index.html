@@ -76,47 +76,7 @@
   <!-- Button for requesting motion permission -->
   <button id="motionBtn">[Allow Motion Access]</button>
 
-<script>
-    let permissionGranted = false;
-    const titleDiv = document.querySelector('.text-mobile');
-    const threshold = 15; // Increase the threshold for when scaling starts based on X-axis tilt
-    const deadZone = 1; // Increase dead zone to ignore smaller tilts
-    let lastScaleFactorY = 1; // Store the last scale factor to smooth transitions
-    let lastUpdateTime = 0; // Track the last time the scaling was updated
-    const updateInterval = 50; // Minimum time between updates (in milliseconds)
-
-    function setup() {
-      // Use p5.js to create a button and handle permission
-      let button = select('#motionBtn');
-      button.mousePressed(requestMotionPermission);
-    }
-
-    function requestMotionPermission() {
-      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-        DeviceOrientationEvent.requestPermission()
-          .then(response => {
-            if (response === 'granted') {
-              permissionGranted = true;
-              console.log('Motion permission granted');
-              select('#motionBtn').hide(); // Hide the button after granting permission
-              window.addEventListener('deviceorientation', handleOrientation);
-            } else {
-              console.log('Motion permission denied');
-            }
-          })
-          .catch(console.error);
-      } else {
-        // For browsers that don't require permission (e.g., Android devices)
-        permissionGranted = true;
-        select('#motionBtn').hide();
-        window.addEventListener('deviceorientation', handleOrientation);
-      }
-    }
-
-    // Low-pass filter constant (higher value = more smoothing, but slower response)
-    const smoothingFactor = 0.15; // Increase smoothing factor for even slower response
-
-   function handleOrientation(event) {
+function handleOrientation(event) {
   if (!permissionGranted) return;
 
   const tiltX = event.beta;  // X-axis (front-to-back tilt)
@@ -134,21 +94,21 @@
   }
   lastUpdateTime = currentTime; // Update the last update time
 
-  // Scale on Y-axis based on tiltX (front-to-back tilt)
+  // --- Independent Y-axis scaling based on tiltX (front-to-back tilt) ---
   let newScaleFactorY;
   if (tiltX > 0) {
-    // When the device is tilted upward (positive tilt), stretch the text
+    // When the device is tilted upward (positive tilt), stretch the text vertically
     newScaleFactorY = 1 + (tiltX / 75); // Adjust 75 for sensitivity
   } else {
-    // When the device is tilted downward (negative tilt), compress the text
+    // When the device is tilted downward (negative tilt), compress the text vertically
     newScaleFactorY = 1 - (-tiltX / 75); // Adjust 75 for sensitivity
   }
 
   // Clamp the scale values for Y-axis
   if (newScaleFactorY < 0.1) newScaleFactorY = 0.1; // Limit minimum compression
-  if (newScaleFactorY > 2) newScaleFactorY = 2; // Limit maximum stretch
+  if (newScaleFactorY > 1.3) newScaleFactorY = 1.3; // Limit maximum stretch
 
-  // Scale on X-axis based on tiltY (left-to-right tilt)
+  // --- Independent X-axis scaling based on tiltY (left-to-right tilt) ---
   let newScaleFactorX;
   if (tiltY > 0) {
     // When the device is tilted right (positive tilt), stretch the text horizontally
@@ -160,18 +120,16 @@
 
   // Clamp the scale values for X-axis
   if (newScaleFactorX < 0.1) newScaleFactorX = 0.1; // Limit minimum compression
-  if (newScaleFactorX > 1.6) newScaleFactorX = 1.6; // Limit maximum stretch
+  if (newScaleFactorX > 1.3) newScaleFactorX = 1.3; // Limit maximum stretch
 
   // Apply a low-pass filter to smooth out sudden changes for both axes
   lastScaleFactorY = lastScaleFactorY + smoothingFactor * (newScaleFactorY - lastScaleFactorY);
-  let lastScaleFactorX = lastScaleFactorY + smoothingFactor * (newScaleFactorX - lastScaleFactorY);
+  lastScaleFactorX = lastScaleFactorX + smoothingFactor * (newScaleFactorX - lastScaleFactorX);
 
-  // Apply the smoothed scaling transformation to both X and Y axes
+  // Apply the smoothed scaling transformation to both X and Y axes independently
   titleDiv.style.transform = `scale(${lastScaleFactorX}, ${lastScaleFactorY})`;
 }
 
-  
-</script>
 
 
 </body>
