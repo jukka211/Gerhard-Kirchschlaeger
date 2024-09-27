@@ -130,7 +130,7 @@
     // Low-pass filter constant (higher value = more smoothing, but slower response)
     const smoothingFactor = 0.15; // Increase smoothing factor for even slower response
 
-    function handleOrientation(event) {
+   function handleOrientation(event) {
   if (!permissionGranted) return;
 
   const tiltX = event.beta; // X-axis (front-to-back tilt)
@@ -151,26 +151,26 @@
   let newScaleFactorY;
 
   if (tiltX > 0) {
-  // When the device is tilted upward (positive tilt), stretch the text
-   newScaleFactorY = 1 + (tiltX / 10); // Adjust 50 for sensitivity
-} else {
-  // When the device is tilted downward (negative tilt), compress the text
- 
-  newScaleFactorY = 1 - (-tiltX / 75); // Adjust 50 for sensitivity
-}
+    // When the device is tilted upward (positive tilt), stretch the text
+    newScaleFactorY = 1 + (tiltX / 10); // Adjust 10 for sensitivity
+    titleDiv.style.transformOrigin = 'top center'; // Scale from the top
+  } else {
+    // When the device is tilted downward (negative tilt), compress the text
+    newScaleFactorY = 1 - (-tiltX / 75); // Adjust 75 for sensitivity
+    titleDiv.style.transformOrigin = 'bottom center'; // Scale from the bottom
+  }
 
-// Clamp the scale values to avoid extreme shrinking/expanding
-if (newScaleFactorY < 0.1) newScaleFactorY = 0.1; // Limit minimum compression
-if (newScaleFactorY > 6) newScaleFactorY = 6; // Limit maximum stretch
+  // Clamp the scale values to avoid extreme shrinking/expanding
+  if (newScaleFactorY < 0.1) newScaleFactorY = 0.1; // Limit minimum compression
+  if (newScaleFactorY > 6) newScaleFactorY = 6; // Limit maximum stretch
 
-// Apply a low-pass filter to smooth out sudden changes
-lastScaleFactorY = lastScaleFactorY + smoothingFactor * (newScaleFactorY - lastScaleFactorY);
-
+  // Apply a low-pass filter to smooth out sudden changes
+  lastScaleFactorY = lastScaleFactorY + smoothingFactor * (newScaleFactorY - lastScaleFactorY);
 
   // Apply the smoothed scaling transformation to the Y-axis
   titleDiv.style.transform = `scaleY(${lastScaleFactorY})`;
 }
-  
+
 </script>
 
 </body>
