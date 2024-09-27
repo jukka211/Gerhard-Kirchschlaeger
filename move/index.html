@@ -122,7 +122,8 @@
     const titleDiv = document.querySelector('.text-mobile');
     const threshold = 15; // Increase the threshold for when scaling starts based on X-axis tilt
     const deadZone = 1; // Increase dead zone to ignore smaller tilts
-    let lastScaleFactorY = 1; // Store the last scale factor to smooth transitions
+    let lastScaleFactorY = 1; // Store the last Y-axis scale factor to smooth transitions
+    let lastScaleFactorX = 1; // Store the last X-axis scale factor for independent X scaling
     let lastUpdateTime = 0; // Track the last time the scaling was updated
     const updateInterval = 50; // Minimum time between updates (in milliseconds)
 
@@ -158,46 +159,54 @@
     const smoothingFactor = 0.15; // Increase smoothing factor for even slower response
 
     function handleOrientation(event) {
-  if (!permissionGranted) return;
+        if (!permissionGranted) return;
 
-  const tiltX = event.beta; // X-axis (front-to-back tilt)
+        const tiltX = event.beta; // X-axis (front-to-back tilt)
+        const tiltY = event.gamma; // Y-axis (left-to-right tilt)
 
-  // Apply dead zone to avoid twitching at small tilts
-  if (Math.abs(tiltX) < deadZone) {
-    return; // Ignore tilts within the dead zone
-  }
+        // Apply dead zone to avoid twitching at small tilts
+        if (Math.abs(tiltX) < deadZone && Math.abs(tiltY) < deadZone) {
+            return; // Ignore tilts within the dead zone
+        }
 
-  // Only update scaling if enough time has passed (debouncing)
-  const currentTime = Date.now();
-  if (currentTime - lastUpdateTime < updateInterval) {
-    return; // Skip this update if it's too soon
-  }
-  lastUpdateTime = currentTime; // Update the last update time
+        // Only update scaling if enough time has passed (debouncing)
+        const currentTime = Date.now();
+        if (currentTime - lastUpdateTime < updateInterval) {
+            return; // Skip this update if it's too soon
+        }
+        lastUpdateTime = currentTime; // Update the last update time
 
-  // Map the tilt to a scaling factor that compresses for positive tilt and stretches for negative tilt
-  let newScaleFactorY;
+        // Y-axis scaling (front-to-back tilt)
+        let newScaleFactorY;
+        if (tiltX > 0) {
+            newScaleFactorY = 1 - (tiltX / 100); // Compress for positive tilt
+        } else {
+            newScaleFactorY = 1 + (-tiltX / 10); // Stretch for negative tilt
+        }
 
-  if (tiltX > 0) {
-  // When the device is tilted upward (positive tilt), compress the text
-  newScaleFactorY = 1 - (tiltX / 100); // Adjust 75 for sensitivity
-} else {
-  // When the device is tilted downward (negative tilt), stretch the text
-  newScaleFactorY = 1 + (-tiltX / 10); // Adjust 10 for sensitivity
-}
+        // Clamp Y-axis scaling
+        newScaleFactorY = Math.max(0.1, Math.min(newScaleFactorY, 13));
 
-// Clamp the scale values to avoid extreme shrinking/expanding
-if (newScaleFactorY < 0.1) newScaleFactorY = 0.1; // Limit minimum compression
-if (newScaleFactorY > 13) newScaleFactorY = 13; // Limit maximum stretch
+        // X-axis scaling (left-to-right tilt)
+        let newScaleFactorX;
+        if (tiltY > 0) {
+            newScaleFactorX = 1 - (tiltY / 100); // Compress for positive tilt
+        } else {
+            newScaleFactorX = 1 + (-tiltY / 10); // Stretch for negative tilt
+        }
 
-// Apply a low-pass filter to smooth out sudden changes
-lastScaleFactorY = lastScaleFactorY + smoothingFactor * (newScaleFactorY - lastScaleFactorY);
+        // Clamp X-axis scaling
+        newScaleFactorX = Math.max(0.1, Math.min(newScaleFactorX, 13));
 
-// Apply the smoothed scaling transformation to the Y-axis
-titleDiv.style.transform = `scaleY(${lastScaleFactorY})`;
+        // Apply low-pass filter to smooth out sudden changes for both axes
+        lastScaleFactorY = lastScaleFactorY + smoothingFactor * (newScaleFactorY - lastScaleFactorY);
+        lastScaleFactorX = lastScaleFactorX + smoothingFactor * (newScaleFactorX - lastScaleFactorX);
+
+        // Apply the smoothed scaling transformation to both X and Y axes
+        titleDiv.style.transform = `scale(${lastScaleFactorX}, ${lastScaleFactorY})`;
     }
-
-  
 </script>
+
 
 </body>
 </html>
